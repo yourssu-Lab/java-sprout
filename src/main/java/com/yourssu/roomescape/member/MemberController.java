@@ -3,6 +3,7 @@ package com.yourssu.roomescape.member;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,4 +33,18 @@ public class MemberController {
         response.addCookie(cookie);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody LoginPostRequest request, HttpServletResponse response){
+        String jwtToken = memberService.login(request);
+
+        Cookie cookie = new Cookie("token", jwtToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok().build();
+    }
+
+
 }
