@@ -22,6 +22,8 @@ public class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("email", "admin@email.com");
         params.put("password", "password");
+        params.put("name", "관리자");
+
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -34,5 +36,16 @@ public class MissionStepTest {
         String token = response.headers().get("Set-Cookie").getValue().split(";")[0].split("=")[1];
 
         assertThat(token).isNotBlank();
+
+        // 로그인체크 api 호출
+        ExtractableResponse<Response> checkResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .cookie("token", token)
+                .when().get("/login/check")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        assertThat(checkResponse.body().jsonPath().getString("name")).isEqualTo("어드민");
     }
 }
