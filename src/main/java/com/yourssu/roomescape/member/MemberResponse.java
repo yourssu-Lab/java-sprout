@@ -13,6 +13,13 @@ public class MemberResponse {
         this.password = password;
     }
 
+    public MemberResponse(Member member) {
+        this.id = member.getId();
+        this.name = member.getName();
+        this.password = member.getPassword();
+        this.email = member.getEmail();
+    }
+
     public Long getId() {
         return id;
     }

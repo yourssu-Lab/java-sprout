@@ -11,7 +11,7 @@ public class TokenService {
     private final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
 
     // 쿠키 배열에서 토큰 추출하는 메서드 (내부용)
-    private String extractTokenFromCookie(Cookie[] cookies) {
+    public String extractTokenFromCookie(Cookie[] cookies) {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("token".equals(cookie.getName())) {

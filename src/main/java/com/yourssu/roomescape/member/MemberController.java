@@ -34,7 +34,10 @@ public class MemberController {
     // 토큰 생성 후 쿠키 생성해서 반환하는 부분
     @PostMapping("/login")
     public ResponseEntity<String> login (@RequestBody MemberRequest memberRequest, HttpServletResponse response){
-        MemberResponse member = memberService.createMember(memberRequest);
+        String email = memberRequest.getEmail();
+        String password = memberRequest.getPassword();
+        MemberResponse member = new MemberResponse(
+                memberService.findByEmailAndPassword(email, password));
         // 토큰 생성부분
         String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
         String accessToken = Jwts.builder()
@@ -64,16 +67,12 @@ public class MemberController {
     }
 
     @GetMapping("/login/check")
-    public ResponseEntity<MemberResponse> checkLogin(HttpServletRequest request){
+    public ResponseEntity<LoginCheckResponse> checkLogin(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        if(cookies!=null){
-            for(Cookie cookie : cookies){
-                if("token".equals(cookie.getName())){
-                    String accessToken = cookie.getValue();
-                }
-            }
-        }
-        return null;
+        String token = tokenService.extractTokenFromCookie(cookies);
+        Long memberId = tokenService.getMemberIdFromToken(token);
+        // 받아주는 애         // 던져주는 애
+        String memberName = memberService.getMemberName(memberId);
+        return ResponseEntity.ok(new LoginCheckResponse(memberName));
     }
-
 }
