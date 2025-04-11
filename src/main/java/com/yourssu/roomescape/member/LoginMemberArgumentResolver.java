@@ -15,7 +15,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
     private MemberService memberService;
     private final TokenUtil tokenUtil = new TokenUtil();
-    private MemberDao memberDao;
 
     public LoginMemberArgumentResolver(MemberService memberService) {
         this.memberService = memberService;
@@ -32,9 +31,8 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         Cookie[] cookies = request.getCookies();
 
         String token = tokenUtil.extractTokenFromCookie(cookies);
-        Long memberId = tokenUtil.parseTokenToId(token);
-        Member member = memberDao.findById(memberId);
+        MemberResponse member = memberService.checkLogin(token);
 
-        return new LoginMember(member.getId(), member.getName(), member.getEmail(), member.getRole());
+        return new LoginMember(member.getId(), member.getName(), member.getEmail());
     }
 }
