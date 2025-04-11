@@ -1,6 +1,8 @@
 package com.yourssu.roomescape.member;
 
+import com.yourssu.roomescape.utils.TokenUtil;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import java.net.URI;
 @RestController
 public class MemberController {
     private MemberService memberService;
+    private final TokenUtil tokenUtil = new TokenUtil();
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -47,7 +50,13 @@ public class MemberController {
     }
 
     @GetMapping("/login/check")
-    public ResponseEntity checkLogin()
-
-
+    public ResponseEntity<MemberResponse> checkLogin(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String token = tokenUtil.extractTokenFromCookie(cookies);
+        if (token != null){
+            MemberResponse response = memberService.checkLogin(token);
+            return ResponseEntity.ok(response);
+        }
+        return null;
+    }
 }

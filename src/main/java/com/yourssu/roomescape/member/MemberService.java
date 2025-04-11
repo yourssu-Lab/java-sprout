@@ -35,4 +35,16 @@ public class MemberService {
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }
+
+    public MemberResponse checkLogin(String token){
+
+        Long memberId = Long.valueOf(Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor("Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=".getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getBody().getSubject());
+
+        Member findMember = memberDao.findById(memberId);
+        return new MemberResponse(findMember.getId(), findMember.getName(), findMember.getEmail());
+    }
 }
