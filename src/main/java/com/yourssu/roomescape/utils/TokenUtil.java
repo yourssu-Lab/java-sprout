@@ -4,6 +4,7 @@ import com.yourssu.roomescape.member.Member;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
+import org.springframework.stereotype.Component;
 
 public class TokenUtil {
 
