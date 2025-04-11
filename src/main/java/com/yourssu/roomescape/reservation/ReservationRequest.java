@@ -4,6 +4,7 @@ public class ReservationRequest {
     private String date;
     private Long theme;
     private Long time;
+    private String name;
 
     public String getDate() {
         return date;
@@ -16,4 +17,5 @@ public class ReservationRequest {
     public Long getTime() {
         return time;
     }
+    public String getName(){return name;}
 }
