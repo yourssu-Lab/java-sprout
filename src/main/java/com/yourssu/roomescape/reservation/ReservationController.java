@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.reservation;
 
+import com.yourssu.roomescape.member.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity create(@RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity create(@RequestBody ReservationRequest reservationRequest, LoginMember member) {
         if (reservationRequest.getName() == null
                 || reservationRequest.getDate() == null
                 || reservationRequest.getTheme() == null

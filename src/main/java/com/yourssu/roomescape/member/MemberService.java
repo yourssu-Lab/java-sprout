@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.member;
 
+import com.yourssu.roomescape.utils.TokenUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,6 +11,7 @@ import static com.yourssu.roomescape.exception.ExceptionMessage.NO_EXIST_MEMBER;
 @Service
 public class MemberService {
     private MemberDao memberDao;
+    private final TokenUtil tokenUtil = new TokenUtil();
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
@@ -27,22 +29,12 @@ public class MemberService {
             throw new IllegalArgumentException(NO_EXIST_MEMBER.getMessage());
         }
 
-        String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
-        return Jwts.builder()
-                .setSubject(member.getId().toString())
-                .claim("name", member.getName())
-                .claim("role", member.getRole())
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
+        return tokenUtil.createToken(member);
     }
 
     public MemberResponse checkLogin(String token){
 
-        Long memberId = Long.valueOf(Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor("Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=".getBytes()))
-                .build()
-                .parseSignedClaims(token)
-                .getBody().getSubject());
+        Long memberId = tokenUtil.parseTokenToId(token);
 
         Member findMember = memberDao.findById(memberId);
         return new MemberResponse(findMember.getId(), findMember.getName(), findMember.getEmail());

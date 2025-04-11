@@ -1,5 +1,8 @@
 package com.yourssu.roomescape.utils;
 
+import com.yourssu.roomescape.member.Member;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 
 public class TokenUtil {
@@ -13,5 +16,24 @@ public class TokenUtil {
             }
         }
         return null;
+    }
+
+    public String createToken(Member member){
+        String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+
+        return Jwts.builder()
+                .setSubject(member.getId().toString())
+                .claim("name", member.getName())
+                .claim("role", member.getRole())
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .compact();
+    }
+
+    public Long parseTokenToId(String token){
+        return Long.valueOf(Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor("Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=".getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getBody().getSubject());
     }
 }

@@ -1,5 +1,9 @@
 package com.yourssu.roomescape;
 
+import com.yourssu.roomescape.reservation.ReservationResponse;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
@@ -35,4 +39,5 @@ public class MissionStepTest {
 
         assertThat(token).isNotBlank();
     }
+
 }
