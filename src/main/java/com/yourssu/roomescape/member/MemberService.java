@@ -19,7 +19,7 @@ public class MemberService {
 
     public MemberResponse createMember(MemberRequest memberRequest) {
         Member member = memberDao.save(new Member(memberRequest.getName(), memberRequest.getEmail(), memberRequest.getPassword(), "USER"));
-        return new MemberResponse(member.getId(), member.getName(), member.getEmail());
+        return new MemberResponse(member.getId(), member.getName(), member.getEmail(), member.getRole());
     }
 
     public String login(LoginPostRequest request){
@@ -37,6 +37,6 @@ public class MemberService {
         Long memberId = tokenUtil.parseTokenToId(token);
 
         Member findMember = memberDao.findById(memberId);
-        return new MemberResponse(findMember.getId(), findMember.getName(), findMember.getEmail());
+        return new MemberResponse(findMember.getId(), findMember.getName(), findMember.getEmail(), findMember.getRole());
     }
 }
