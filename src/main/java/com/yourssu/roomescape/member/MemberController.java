@@ -46,5 +46,8 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/login/check")
+    public ResponseEntity checkLogin()
+
 
 }
