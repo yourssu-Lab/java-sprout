@@ -42,8 +42,6 @@ public class RoleCheckInterceptor implements HandlerInterceptor {
 
         String name = loginService.checkLogin(token);
         Member member = memberDao.findByName(name);
-        System.out.println("member : " + member.getRole());
-        System.out.println("member : " + name);
         if (member == null || !member.getRole().equals("ADMIN")) {
             response.setStatus(401);
             return false;
