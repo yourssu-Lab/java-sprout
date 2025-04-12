@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.auth;
 
+import com.yourssu.roomescape.infrastructure.CookieProvider;
 import com.yourssu.roomescape.infrastructure.JwtTokenProvider;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberDao;
@@ -28,7 +29,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(LoginMember.class);
+        return parameter.hasParameterAnnotation(LoginMember.class);
     }
 
     @Override
@@ -36,12 +37,9 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
         Cookie[] cookies = request.getCookies();
-        String token = Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals("token"))
-                .map(Cookie::getValue)
-                .findFirst()
-                .orElse("");
+        String token = CookieProvider.findCookieByKey(cookies, "token");
 
+        //todo: exception handling
         String memberEmail = jwtTokenProvider.getPayload(token);
         return memberDao.findByEmail(memberEmail);
     }

@@ -26,7 +26,6 @@ public class MissionStepTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    // todo: moving this method to jwtTokenProvider
     @Test
     void 일단계() {
         Map<String, String> params = new HashMap<>();
