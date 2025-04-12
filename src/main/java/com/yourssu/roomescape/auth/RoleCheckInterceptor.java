@@ -1,7 +1,9 @@
 package com.yourssu.roomescape.auth;
 
+import com.yourssu.roomescape.infrastructure.CookieProvider;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberDao;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
@@ -25,16 +27,13 @@ public class RoleCheckInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (request.getCookies() == null) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
             response.setStatus(400);
             return false;
         }
 
-        String token = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("token"))
-                .map(cookie -> cookie.getValue())
-                .findFirst().orElse("");
-
+        String token = CookieProvider.findCookieByKey(cookies, "token");
         if (token.isBlank()) {
             response.setStatus(400);
             return false;
