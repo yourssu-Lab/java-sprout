@@ -92,7 +92,6 @@ public class MissionStepTest {
     @Test
     void 삼단계() {
         String brownToken = jwtTokenProvider.createTokenToTest("brown@email.com", "password");
-        System.out.println("token : " + brownToken);
         RestAssured.given().log().all()
                 .cookie("token", brownToken)
                 .get("/admin")
