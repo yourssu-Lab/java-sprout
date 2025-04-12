@@ -46,8 +46,11 @@ public class MemberController {
     @GetMapping("/login/check")
     public ResponseEntity<LoginCheckResponse> checkLogin(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        String token = CookieProvider.findCookieByKey(cookies, "token");
+        if (cookies == null) {
+            return ResponseEntity.notFound().build();
+        }
 
+        String token = CookieProvider.findCookieByKey(cookies, "token");
         if (token.isBlank()) {
             return ResponseEntity.notFound().build();
         }
