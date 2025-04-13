@@ -1,15 +1,11 @@
 package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.auth.LoginCheckResponse;
 import com.yourssu.roomescape.auth.LoginMember;
-import com.yourssu.roomescape.auth.LoginService;
 import com.yourssu.roomescape.member.Member;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -34,11 +30,7 @@ public class ReservationController {
             return ResponseEntity.badRequest().build();
         }
 
-        if (reservationRequest.getName() == null) {
-            reservationRequest.setName(member.getName());
-        }
-
-        ReservationResponse reservation = reservationService.save(reservationRequest);
+        ReservationResponse reservation = reservationService.save(reservationRequest, member);
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
     }
 

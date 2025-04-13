@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.reservation;
 
+import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,12 +44,19 @@ public class ReservationDao {
                         )));
     }
 
-    public Reservation save(ReservationRequest reservationRequest) {
+    public Reservation save(ReservationRequest reservationRequest, Member member) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        String name;
+        if (reservationRequest.getName() == null) {
+            name = member.getName();
+        } else {
+            name = reservationRequest.getName();
+        }
+
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO reservation(date, name, theme_id, time_id) VALUES (?, ?, ?, ?)", new String[]{"id"});
             ps.setString(1, reservationRequest.getDate());
-            ps.setString(2, reservationRequest.getName());
+            ps.setString(2, name);
             ps.setLong(3, reservationRequest.getTheme());
             ps.setLong(4, reservationRequest.getTime());
             return ps;
@@ -64,7 +72,7 @@ public class ReservationDao {
 
         return new Reservation(
                 keyHolder.getKey().longValue(),
-                reservationRequest.getName(),
+                name,
                 reservationRequest.getDate(),
                 time,
                 theme
