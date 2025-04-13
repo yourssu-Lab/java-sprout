@@ -28,9 +28,6 @@ public class MemberDao {
     }
 
     public Member findByEmailAndPassword(String email, String password) {
-        // 실행 당시 로그인 안한상태면 EmptyResultDataAccessException 발생해 예외처리 발생했는데,
-        // 쿼리 결과가 2개 이상이면 IncorrectResultSizeDataAccessException 뜰듯
-        // ExceptionController에서 일단 예외처리하는듯?
         return jdbcTemplate.queryForObject(
                 "SELECT id, name, email, role FROM member WHERE email = ? AND password = ?",
                 (rs, rowNum) -> new Member(

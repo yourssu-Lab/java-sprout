@@ -9,8 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-// todo: naming change
-
 @Component
 public class RoleCheckInterceptor implements HandlerInterceptor {
     private final MemberDao memberDao;
