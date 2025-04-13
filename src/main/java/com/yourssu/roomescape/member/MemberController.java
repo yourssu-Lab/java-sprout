@@ -1,6 +1,7 @@
 package com.yourssu.roomescape.member;
 
 import com.yourssu.roomescape.auth.LoginCheckResponse;
+import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.auth.LoginRequest;
 import com.yourssu.roomescape.auth.LoginService;
 import com.yourssu.roomescape.infrastructure.CookieProvider;
@@ -44,19 +45,8 @@ public class MemberController {
     }
 
     @GetMapping("/login/check")
-    public ResponseEntity<LoginCheckResponse> checkLogin(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        String token = CookieProvider.findCookieByKey(cookies, "token");
-        if (token.isBlank()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        String name = loginService.checkLogin(token);
-        return ResponseEntity.ok().body(new LoginCheckResponse(name));
+    public ResponseEntity<LoginCheckResponse> checkLogin(@LoginMember Member member) {
+        return ResponseEntity.ok().body(new LoginCheckResponse(member.getName()));
     }
 
     @PostMapping("/logout")

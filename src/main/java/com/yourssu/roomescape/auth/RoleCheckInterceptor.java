@@ -28,16 +28,7 @@ public class RoleCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            response.setStatus(400);
-            return false;
-        }
-
         String token = CookieProvider.findCookieByKey(cookies, "token");
-        if (token.isBlank()) {
-            response.setStatus(400);
-            return false;
-        }
 
         String name = loginService.checkLogin(token);
         Member member = memberDao.findByName(name);
