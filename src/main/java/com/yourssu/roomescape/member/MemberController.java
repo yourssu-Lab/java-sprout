@@ -4,11 +4,8 @@ import com.yourssu.roomescape.auth.LoginCheckResponse;
 import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.auth.LoginRequest;
 import com.yourssu.roomescape.auth.LoginService;
-import com.yourssu.roomescape.infrastructure.CookieProvider;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.Arrays;
 
 @RestController
 public class MemberController {
