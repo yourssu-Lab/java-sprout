@@ -37,14 +37,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
         Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return null;
-        }
-
         String token = CookieProvider.findCookieByKey(cookies, "token");
-        if (token.isBlank()) {
-            return null;
-        }
 
         String memberEmail = jwtTokenProvider.getPayload(token);
         return memberDao.findByEmail(memberEmail);
