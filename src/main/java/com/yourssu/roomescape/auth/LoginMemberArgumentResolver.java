@@ -2,20 +2,15 @@ package com.yourssu.roomescape.auth;
 
 import com.yourssu.roomescape.infrastructure.CookieProvider;
 import com.yourssu.roomescape.infrastructure.JwtTokenProvider;
-import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberDao;
-import com.yourssu.roomescape.member.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.Arrays;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {

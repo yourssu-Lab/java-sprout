@@ -2,7 +2,6 @@ package com.yourssu.roomescape.infrastructure;
 
 import com.yourssu.roomescape.auth.LoginValidator;
 import jakarta.servlet.http.Cookie;
-import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
