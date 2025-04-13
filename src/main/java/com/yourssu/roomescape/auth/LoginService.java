@@ -3,8 +3,6 @@ package com.yourssu.roomescape.auth;
 import com.yourssu.roomescape.infrastructure.JwtTokenProvider;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberDao;
-import com.yourssu.roomescape.member.MemberService;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
