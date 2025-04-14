@@ -11,7 +11,6 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    // 메서드
     public Member findByEmailAndPassword(String email, String password) {
         return memberDao.findByEmailAndPassword(email, password);
     }
@@ -19,6 +18,21 @@ public class MemberService {
     public String getMemberName(Long memberId){
         Member member  =  memberDao.findByMemberId(memberId);
         return member.getName();
+    }
+
+    // MemberService
+    public MemberResponse findMemberById(Long memberId) {
+        Member member = memberDao.findByMemberId(memberId);
+        return new MemberResponse(
+                member.getId(),
+                member.getName(),
+                member.getEmail(),
+                member.getRole()
+        );
+    }
+
+    public Member findByName(String name) {
+        return memberDao.findByName(name); // DB에서 조회
     }
 
 
@@ -33,5 +47,9 @@ public class MemberService {
             throw new IllegalArgumentException("회원 ID가 존재하지 않습니다.");
         }
         return new MemberResponse(member);
+    }
+
+    public Member findByMemberId(Long memberId) {
+        return memberDao.findByMemberId(memberId);
     }
 }
