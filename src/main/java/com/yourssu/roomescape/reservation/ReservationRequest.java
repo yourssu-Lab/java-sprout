@@ -1,14 +1,10 @@
 package com.yourssu.roomescape.reservation;
 
 public class ReservationRequest {
-    private String name;
     private String date;
     private Long theme;
     private Long time;
-
-    public String getName() {
-        return name;
-    }
+    private String name;
 
     public String getDate() {
         return date;
@@ -20,5 +16,9 @@ public class ReservationRequest {
 
     public Long getTime() {
         return time;
+    }
+
+    public String getName() {
+        return name;
     }
 }
