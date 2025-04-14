@@ -33,6 +33,11 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.4.4'
     testImplementation 'io.rest-assured:rest-assured:5.5.1'
+
+    //lombok 라이브러리 추가.
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
 }
 
 tasks.named('test') {

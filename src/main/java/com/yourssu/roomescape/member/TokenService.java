@@ -11,15 +11,22 @@ public class TokenService {
     private final String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
 
     // 쿠키 배열에서 토큰 추출하는 메서드 (내부용)
-    public String extractTokenFromCookie(Cookie[] cookies) {
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
+    String extractTokenFromCookie(Cookie[] cookies) {
+        if (cookies == null || cookies.length == 0) {
+            throw new TokenNotFoundException();
+        }
+        for (Cookie cookie : cookies) {
+            if ("token".equals(cookie.getName())) {
+                return cookie.getValue();
             }
         }
-        return null;
+        throw new TokenNotFoundException();
+    }
+
+    private static class TokenNotFoundException extends RuntimeException {
+        public TokenNotFoundException() {
+            super("쿠키에서 토큰을 찾을 수 없습니다.");
+        }
     }
 
     // 전달된 토큰을 파싱해서 JWT subject 값을 Long 타입의 memberId로 변환하는 메서드
@@ -43,4 +50,14 @@ public class TokenService {
         }
         return getMemberIdFromToken(token);
     }
+
+//    public String createToken(String email, String password) {
+//
+//        return Jwts.builder()
+//                .setSubject(email)
+//                .claim("password", password)
+//                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+//                .compact();
+//    }
+
 }
