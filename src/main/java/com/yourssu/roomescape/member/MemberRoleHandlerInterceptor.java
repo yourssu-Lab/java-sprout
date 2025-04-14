@@ -11,10 +11,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class MemberRoleHandlerInterceptor implements HandlerInterceptor {
 
     private MemberService memberService;
-    private final TokenUtil tokenUtil = new TokenUtil();
+    private final TokenUtil tokenUtil;
 
-    public MemberRoleHandlerInterceptor(MemberService memberService){
+    public MemberRoleHandlerInterceptor(MemberService memberService, TokenUtil tokenUtil){
         this.memberService = memberService;
+        this.tokenUtil = tokenUtil;
     }
 
     @Override

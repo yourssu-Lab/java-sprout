@@ -14,10 +14,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
     private MemberService memberService;
-    private final TokenUtil tokenUtil = new TokenUtil();
+    private final TokenUtil tokenUtil;
 
-    public LoginMemberArgumentResolver(MemberService memberService) {
+    public LoginMemberArgumentResolver(MemberService memberService, TokenUtil tokenUtil) {
         this.memberService = memberService;
+        this.tokenUtil = tokenUtil;
     }
 
     @Override

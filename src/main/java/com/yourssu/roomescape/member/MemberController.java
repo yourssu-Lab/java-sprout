@@ -15,10 +15,11 @@ import java.net.URI;
 @RestController
 public class MemberController {
     private MemberService memberService;
-    private final TokenUtil tokenUtil = new TokenUtil();
+    private final TokenUtil tokenUtil;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, TokenUtil tokenUtil) {
         this.memberService = memberService;
+        this.tokenUtil = tokenUtil;
     }
 
     @PostMapping("/members")

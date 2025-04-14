@@ -1,12 +1,20 @@
 package com.yourssu.roomescape.utils;
 
 import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.property.TokenProperty;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import org.springframework.stereotype.Component;
 
+@Component
 public class TokenUtil {
+
+    private final TokenProperty tokenProperty;
+
+    public TokenUtil(TokenProperty tokenProperty) {
+        this.tokenProperty = tokenProperty;
+    }
 
     public String extractTokenFromCookie(Cookie[] cookies){
         if (cookies != null) {
@@ -20,7 +28,7 @@ public class TokenUtil {
     }
 
     public String createToken(Member member){
-        String secretKey = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";
+        String secretKey = tokenProperty.getSecretKey();
 
         return Jwts.builder()
                 .setSubject(member.getId().toString())
@@ -32,7 +40,7 @@ public class TokenUtil {
 
     public Long parseTokenToId(String token){
         return Long.valueOf(Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor("Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=".getBytes()))
+                .verifyWith(Keys.hmacShaKeyFor(tokenProperty.getSecretKey().getBytes()))
                 .build()
                 .parseSignedClaims(token)
                 .getBody().getSubject());

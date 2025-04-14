@@ -11,10 +11,11 @@ import static com.yourssu.roomescape.exception.ExceptionMessage.NO_EXIST_MEMBER;
 @Service
 public class MemberService {
     private MemberDao memberDao;
-    private final TokenUtil tokenUtil = new TokenUtil();
+    private final TokenUtil tokenUtil;
 
-    public MemberService(MemberDao memberDao) {
+    public MemberService(MemberDao memberDao, TokenUtil tokenUtil) {
         this.memberDao = memberDao;
+        this.tokenUtil = tokenUtil;
     }
 
     public MemberResponse createMember(MemberRequest memberRequest) {
