@@ -17,24 +17,25 @@ public class TokenUtil {
     }
 
     public String extractTokenFromCookie(Cookie[] cookies){
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    return cookie.getValue();
-                }
+        if (cookies == null || cookies.length == 0) {
+            return null;
+        }
+        for (Cookie cookie : cookies) {
+            if (cookie != null && "token".equals(cookie.getName())) {
+                return cookie.getValue();
             }
         }
+
         return null;
     }
 
     public String createToken(Member member){
-        String secretKey = tokenProperty.getSecretKey();
 
         return Jwts.builder()
                 .setSubject(member.getId().toString())
                 .claim("name", member.getName())
                 .claim("role", member.getRole())
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .signWith(Keys.hmacShaKeyFor(tokenProperty.getSecretKey().getBytes()))
                 .compact();
     }
 

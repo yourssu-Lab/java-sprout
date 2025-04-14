@@ -17,5 +17,8 @@ public class ReservationRequest {
     public Long getTime() {
         return time;
     }
-    public String getName(){return name;}
+
+    public String getName() {
+        return name;
+    }
 }

@@ -1,6 +1,5 @@
 package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.member.LoginMember;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
 import org.springframework.jdbc.core.JdbcTemplate;

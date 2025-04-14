@@ -1,6 +1,7 @@
 package com.yourssu.roomescape.member;
 
 import com.yourssu.roomescape.utils.TokenUtil;
+import com.yourssu.roomescape.validator.MemberValidator;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,9 +27,7 @@ public class MemberService {
     public String login(LoginPostRequest request){
         Member member = memberDao.findByEmailAndPassword(request.getEmail(), request.getPassword());
 
-        if (member == null){
-            throw new IllegalArgumentException(NO_EXIST_MEMBER.getMessage());
-        }
+        MemberValidator.validateMemeber(member);
 
         return tokenUtil.createToken(member);
     }
