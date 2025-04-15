@@ -4,6 +4,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.dao.EmptyResultDataAccessException;
+
+import java.util.Optional;
 
 @Repository
 public class MemberDao {
@@ -27,17 +30,23 @@ public class MemberDao {
         return new Member(keyHolder.getKey().longValue(), member.getName(), member.getEmail(), "USER");
     }
 
-    public Member findByEmailAndPassword(String email, String password) {
-        return jdbcTemplate.queryForObject(
-                "SELECT id, name, email, role FROM member WHERE email = ? AND password = ?",
-                (rs, rowNum) -> new Member(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("role")
-                ),
-                email, password
-        );
+    // MemberDao.java or MemberDaoImpl.java
+    public Optional<Member> findByEmailAndPassword(String email, String password) {
+        try {
+            Member member = jdbcTemplate.queryForObject(
+                    "SELECT id, name, email, role FROM member WHERE email = ? AND password = ?",
+                    (rs, rowNum) -> new Member(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            rs.getString("role")
+                    ),
+                    email, password
+            );
+            return Optional.of(member);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();  // ✅ 결과가 없을 때 안전하게 Optional.empty()
+        }
     }
 
     public Member findByName(String name) {
@@ -53,16 +62,21 @@ public class MemberDao {
         );
     }
 
-    public Member findByEmail(String email) {
-        return jdbcTemplate.queryForObject(
-                "SELECT id, name, email, role FROM member WHERE email = ?",
-                (rs, rowNum) -> new Member(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("role")
-                ),
-                email
-        );
+    public Optional<Member> findByEmail(String email) {
+        try {
+            Member member = jdbcTemplate.queryForObject(
+                    "SELECT id, name, email, role FROM member WHERE email = ?",
+                    (rs, rowNum) -> new Member(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            rs.getString("role")
+                    ),
+                    email
+            );
+            return Optional.of(member);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }
