@@ -1,6 +1,10 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.member.LoginMember;
+import com.yourssu.roomescape.utils.TokenUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +15,11 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final TokenUtil tokenUtil;
 
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(ReservationService reservationService, TokenUtil tokenUtil) {
         this.reservationService = reservationService;
+        this.tokenUtil = tokenUtil;
     }
 
     @GetMapping("/reservations")
@@ -28,7 +34,7 @@ public class ReservationController {
                 || reservationRequest.getTime() == null) {
             return ResponseEntity.badRequest().build();
         }
-        ReservationResponse reservation = reservationService.save(reservationRequest, member);
+            ReservationResponse reservation = reservationService.save(reservationRequest, member);
 
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
 
@@ -38,5 +44,11 @@ public class ReservationController {
     public ResponseEntity delete(@PathVariable Long id) {
         reservationService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/reservation-mine")
+    public ResponseEntity<List<MineReservationResponse>> listMine(LoginMember loginMember){
+
+        return ResponseEntity.ok(reservationService.listMine(loginMember));
     }
 }
