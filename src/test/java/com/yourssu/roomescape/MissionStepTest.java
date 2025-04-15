@@ -1,11 +1,16 @@
 package com.yourssu.roomescape;
 
 import com.yourssu.roomescape.reservation.ReservationResponse;
+import com.yourssu.roomescape.time.Time;
+import com.yourssu.roomescape.time.TimeRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
