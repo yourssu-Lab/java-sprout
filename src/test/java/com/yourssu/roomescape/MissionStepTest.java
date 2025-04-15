@@ -2,6 +2,7 @@ package com.yourssu.roomescape;
 
 import com.yourssu.roomescape.infrastructure.JwtTokenProvider;
 import com.yourssu.roomescape.reservation.ReservationResponse;
+import com.yourssu.roomescape.time.Time;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.restassured.RestAssured;
