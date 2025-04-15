@@ -1,6 +1,5 @@
 package com.yourssu.roomescape.auth;
 
-import com.yourssu.roomescape.member.LoginRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

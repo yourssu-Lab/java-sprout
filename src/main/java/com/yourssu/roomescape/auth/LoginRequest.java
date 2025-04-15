@@ -1,4 +1,4 @@
-package com.yourssu.roomescape.member;
+package com.yourssu.roomescape.auth;
 
 public class LoginRequest {
 
@@ -12,5 +12,4 @@ public class LoginRequest {
     public String getPassword() {
         return password;
     }
-
 }
