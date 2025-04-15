@@ -1,5 +1,8 @@
 package com.yourssu.roomescape.member;
 
+import com.yourssu.roomescape.exception.CustomException;
+import com.yourssu.roomescape.exception.ErrorCode;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -28,28 +31,36 @@ public class MemberDao {
     }
 
     public Member findByEmailAndPassword(String email, String password) {
-        return jdbcTemplate.queryForObject(
-                "SELECT id, name, email, role FROM member WHERE email = ? AND password = ?",
-                (rs, rowNum) -> new Member(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("role")
-                ),
-                email, password
-        );
+        try {
+            return jdbcTemplate.queryForObject(
+                    "SELECT id, name, email, role FROM member WHERE email = ? AND password = ?",
+                    (rs, rowNum) -> new Member(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            rs.getString("role")
+                    ),
+                    email, password
+            );
+        } catch (DataAccessException e) {
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+        }
     }
 
-    public Member findByName(String name) {
-        return jdbcTemplate.queryForObject(
-                "SELECT id, name, email, role FROM member WHERE name = ?",
-                (rs, rowNum) -> new Member(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("role")
-                ),
-                name
-        );
+    public Member findByEmail(String email) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    "SELECT id, name, email, role FROM member WHERE email = ?",
+                    (rs, rowNum) -> new Member(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            rs.getString("role")
+                    ),
+                    email
+            );
+        } catch (DataAccessException e) {
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+        }
     }
 }
