@@ -1,8 +1,18 @@
 package com.yourssu.roomescape.theme;
 
+import com.yourssu.roomescape.reservation.Reservation;
+import jakarta.persistence.*;
+
+@Entity
 public class Theme {
+
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
+
+    @Column
     private String name;
+    @Column
     private String description;
 
     public Theme() {

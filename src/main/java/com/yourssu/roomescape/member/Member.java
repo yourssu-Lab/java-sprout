@@ -1,10 +1,24 @@
 package com.yourssu.roomescape.member;
 
+import jakarta.persistence.*;
+
+@Entity
+
 public class Member {
+    @Id
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
+
+    @Column
     private String name;
+
+    @Column
     private String email;
+
+    @Column
     private String password;
+
+    @Column
     private String role;
 
     public Member() {
