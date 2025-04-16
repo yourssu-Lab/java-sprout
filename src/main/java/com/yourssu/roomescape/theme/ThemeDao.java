@@ -1,11 +1,13 @@
 package com.yourssu.roomescape.theme;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ThemeDao {
@@ -21,6 +23,22 @@ public class ThemeDao {
                 rs.getString("name"),
                 rs.getString("description")
         ));
+    }
+
+    public Optional<Theme> findById(Long id) {
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(
+                    "SELECT * FROM theme WHERE id = ? AND deleted = false",
+                    (rs, rowNum) -> new Theme(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getString("description")
+                    ),
+                    id
+            ));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Theme save(Theme theme) {

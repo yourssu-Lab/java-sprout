@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.time;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TimeDao {
@@ -22,6 +24,21 @@ public class TimeDao {
                 (rs, rowNum) -> new Time(
                         rs.getLong("id"),
                         rs.getString("time_value")));
+    }
+
+    public Optional<Time> findById(Long id) {
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(
+                    "SELECT * FROM time WHERE id = ? AND deleted = false",
+                    (rs, rowNum) -> new Time(
+                            rs.getLong("id"),
+                            rs.getString("time_value")
+                    ),
+                    id
+            ));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Time save(Time time) {
