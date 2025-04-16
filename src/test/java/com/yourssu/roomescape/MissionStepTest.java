@@ -2,7 +2,6 @@ package com.yourssu.roomescape;
 
 import com.yourssu.roomescape.auth.AuthService;
 import com.yourssu.roomescape.auth.LoginRequest;
-import com.yourssu.roomescape.jwt.TokenProvider;
 import com.yourssu.roomescape.reservation.ReservationResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -86,5 +85,26 @@ public class MissionStepTest {
 
         assertThat(adminResponse.statusCode()).isEqualTo(201);
         assertThat(adminResponse.as(ReservationResponse.class).getName()).isEqualTo("브라운");
+    }
+
+    @Test
+    void 삼단계() {
+        LoginRequest loginRequest = new LoginRequest("brown@email.com", "password");
+        String brownToken = authService.login(loginRequest);
+
+        RestAssured.given().log().all()
+                .cookie("token", brownToken)
+                .get("/admin")
+                .then().log().all()
+                .statusCode(401);
+
+        loginRequest = new LoginRequest("admin@email.com", "password");
+        String adminToken = authService.login(loginRequest);
+
+        RestAssured.given().log().all()
+                .cookie("token", adminToken)
+                .get("/admin")
+                .then().log().all()
+                .statusCode(200);
     }
 }
