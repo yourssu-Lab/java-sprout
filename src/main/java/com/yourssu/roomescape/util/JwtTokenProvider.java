@@ -1,9 +1,9 @@
 package com.yourssu.roomescape.util;
 
+import com.yourssu.roomescape.config.JwtProperties;
 import com.yourssu.roomescape.member.Member;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -15,12 +15,9 @@ public class JwtTokenProvider {
     private final Key key;
     private final long validityInMilliseconds;
 
-    public JwtTokenProvider(
-            @Value("${roomescape.auth.jwt.secret}") String secretKey,
-            @Value("${security.jwt.token.expire-length}") long validityInMilliseconds
-    ) {
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
-        this.validityInMilliseconds = validityInMilliseconds;
+    public JwtTokenProvider(JwtProperties jwtProperties) {
+        this.key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
+        this.validityInMilliseconds = jwtProperties.getExpireLength();
     }
 
     public String createToken(Member member) {
@@ -28,21 +25,17 @@ public class JwtTokenProvider {
         Date expiry = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setSubject(member.getEmail())
+                .subject(member.getEmail())
                 .claim("name", member.getName())
                 .claim("role", member.getRole())
-                .setIssuedAt(now)
-                .setExpiration(expiry)
+                .issuedAt(now)
+                .expiration(expiry)
                 .signWith(key)
                 .compact();
     }
 
     public String getEmail(String token) {
         return getClaims(token).getSubject();
-    }
-
-    public String getMemberName(String token) {
-        return getClaims(token).get("name", String.class);
     }
 
     public String getRole(String token) {
@@ -53,7 +46,7 @@ public class JwtTokenProvider {
         return Jwts.parser()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
