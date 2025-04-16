@@ -21,9 +21,8 @@ public class AuthService {
         return tokenProvider.createToken(member.getEmail());
     }
 
-    public CheckLoginResponse checkLogin(String token) {
+    public Member checkLogin(String token) {
         String payload = tokenProvider.getPayload(token);
-        Member member = memberDao.findByEmail(payload);
-        return new CheckLoginResponse(member.getName());
+        return memberDao.findByEmail(payload);
     }
 }

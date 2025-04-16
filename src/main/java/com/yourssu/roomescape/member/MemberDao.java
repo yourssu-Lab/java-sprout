@@ -63,4 +63,21 @@ public class MemberDao {
             throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
         }
     }
+
+    public Member findByName(String name) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    "SELECT id, name, email, role FROM member WHERE name = ?",
+                    (rs, rowNum) -> new Member(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getString("email"),
+                            rs.getString("role")
+                    ),
+                    name
+            );
+        } catch (DataAccessException e) {
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+    }
 }
