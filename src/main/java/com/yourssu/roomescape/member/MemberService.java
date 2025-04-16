@@ -11,7 +11,7 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    public MemberResponse create(MemberRequest request) {
+    public MemberResponse createMember(MemberRequest request) {
         Member member = new Member(request.getName(), request.getEmail(), request.getPassword(), "USER");
         Member saved = memberDao.save(member);
         return new MemberResponse(saved.getId(), saved.getName(), saved.getEmail());
