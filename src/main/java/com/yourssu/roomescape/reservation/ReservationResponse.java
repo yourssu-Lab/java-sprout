@@ -11,4 +11,14 @@ public class ReservationResponse {
     private final String date;
     private final String time;
     private final String theme;
+
+    public static ReservationResponse of(Reservation reservation) {
+        return new ReservationResponse(
+                reservation.getId(),
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime().getValue(),
+                reservation.getTheme().getName()
+        );
+    }
 }

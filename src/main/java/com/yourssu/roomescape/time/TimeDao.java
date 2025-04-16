@@ -27,21 +27,6 @@ public class TimeDao {
                         rs.getString("time_value")));
     }
 
-    public Optional<Time> findById(Long id) {
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(
-                    "SELECT * FROM time WHERE id = ? AND deleted = false",
-                    (rs, rowNum) -> new Time(
-                            rs.getLong("id"),
-                            rs.getString("time_value")
-                    ),
-                    id
-            ));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
     public Time save(Time time) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         this.jdbcTemplate.update(connection -> {
