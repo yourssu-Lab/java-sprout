@@ -47,8 +47,7 @@ public class AuthController {
                     .orElseThrow(() -> new CustomException(ErrorCode.TOKEN_NOT_FOUND));
         }
 
-        CheckLoginResponse checkLoginResponse = authService.checkLogin(token);
-
-        return ResponseEntity.ok().body(checkLoginResponse);
+        String name = authService.checkLogin(token).getName();
+        return ResponseEntity.ok().body(new CheckLoginResponse(name));
     }
 }
