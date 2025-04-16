@@ -38,7 +38,7 @@ public class JwtTokenProvider {
     }
 
     public String getEmail(String token) {
-        return getClaims(token).getSubject(); 
+        return getClaims(token).getSubject();
     }
 
     public String getMemberName(String token) {
