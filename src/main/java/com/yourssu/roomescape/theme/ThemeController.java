@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 public class ThemeController {
-    private ThemeDao themeDao;
+    private final ThemeDao themeDao;
 
     public ThemeController(ThemeDao themeDao) {
         this.themeDao = themeDao;
