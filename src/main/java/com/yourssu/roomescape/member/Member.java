@@ -1,5 +1,8 @@
 package com.yourssu.roomescape.member;
 
+import lombok.Getter;
+
+@Getter
 public class Member {
     private final Long id;
     private final String name;
@@ -19,9 +22,4 @@ public class Member {
         this(null, name, email, password, role);
     }
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-    public String getPassword() { return password; }
-    public String getRole() { return role; }
 }

@@ -1,5 +1,8 @@
 package com.yourssu.roomescape.theme;
 
+import lombok.Getter;
+
+@Getter
 public class Theme {
     private Long id;
     private String name;
@@ -19,15 +22,4 @@ public class Theme {
         this.description = description;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }

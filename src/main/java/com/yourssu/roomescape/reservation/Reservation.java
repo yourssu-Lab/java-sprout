@@ -2,7 +2,9 @@ package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
+import lombok.Getter;
 
+@Getter
 public class Reservation {
     private Long id;
     private String name;
@@ -29,23 +31,4 @@ public class Reservation {
 
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public Time getTime() {
-        return time;
-    }
-
-    public Theme getTheme() {
-        return theme;
-    }
 }
