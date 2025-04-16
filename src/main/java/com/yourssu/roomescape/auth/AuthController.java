@@ -1,7 +1,6 @@
 package com.yourssu.roomescape.auth;
 
-import com.yourssu.roomescape.util.CookieConstants;
-import com.yourssu.roomescape.util.ValidationUtils;
+import com.yourssu.roomescape.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +21,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request, HttpServletResponse response) {
         AuthResponse authResponse = authService.login(request);
 
-        Cookie cookie = new Cookie(CookieConstants.TOKEN, authResponse.getToken());
+        Cookie cookie = new Cookie(CookieUtil.TOKEN, authResponse.getToken());
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
@@ -32,7 +31,7 @@ public class AuthController {
 
     @GetMapping("/login/check")
     public ResponseEntity<LoginCheckResponse> checkLogin(HttpServletRequest request) {
-        String token = ValidationUtils.extractTokenFromCookies(request.getCookies());
+        String token = CookieUtil.extractTokenFromCookies(request.getCookies());
         if (token == null || token.isEmpty()) return ResponseEntity.status(401).build();
 
         String name = authService.getNameFromToken(token);
@@ -41,7 +40,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie(CookieConstants.TOKEN, "");
+        Cookie cookie = new Cookie(CookieUtil.TOKEN, "");
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(0);
