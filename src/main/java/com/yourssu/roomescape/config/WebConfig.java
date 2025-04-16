@@ -1,23 +1,27 @@
 package com.yourssu.roomescape.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.yourssu.roomescape.auth.LoginMemberArgumentResolver;
+import com.yourssu.roomescape.member.MemberDao;
+import com.yourssu.roomescape.util.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final AuthInterceptor authInterceptor;
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    public WebConfig(AuthInterceptor authInterceptor) {
-        this.authInterceptor = authInterceptor;
+    public WebConfig(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
+        this.memberDao = memberDao;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/api/**")
-                .excludePathPatterns("/login", "/login/check", "/h2-console/**", "/css/**", "/js/**", "/"); // 비보호 경로
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginMemberArgumentResolver(memberDao, jwtTokenProvider));
     }
 }
