@@ -1,7 +1,6 @@
 package com.yourssu.roomescape.auth;
 
-import com.yourssu.roomescape.exception.CustomException;
-import com.yourssu.roomescape.exception.ErrorCode;
+import com.yourssu.roomescape.jwt.TokenExtractor;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
@@ -10,8 +9,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.Arrays;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
@@ -32,15 +29,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
         Cookie[] cookies = request.getCookies();
-        String token = null;
-
-        if (cookies != null) {
-            token = Arrays.stream(cookies)
-                    .filter(cookie -> "token".equals(cookie.getName()))
-                    .map(Cookie::getValue)
-                    .findFirst()
-                    .orElseThrow(() -> new CustomException(ErrorCode.TOKEN_NOT_FOUND));
-        }
+        String token = TokenExtractor.extractTokenFromCookies(cookies);
 
         return authService.checkLogin(token);
     }
