@@ -1,13 +1,10 @@
 package com.yourssu.roomescape.auth;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class LoginCheckResponse {
-    private String  name;
-
-    public LoginCheckResponse(final String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
+    private final String name;
 }
