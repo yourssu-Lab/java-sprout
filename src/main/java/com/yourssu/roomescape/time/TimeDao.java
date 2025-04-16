@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -49,7 +50,7 @@ public class TimeDao {
             return ps;
         }, keyHolder);
 
-        return new Time(keyHolder.getKey().longValue(), time.getValue());
+        return new Time(Objects.requireNonNull(keyHolder.getKey()).longValue(), time.getValue());
     }
 
     public void deleteById(Long id) {

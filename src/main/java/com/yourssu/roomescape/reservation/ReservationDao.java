@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class ReservationDao {
@@ -63,7 +64,7 @@ public class ReservationDao {
                 reservationRequest.getTheme());
 
         return new Reservation(
-                keyHolder.getKey().longValue(),
+                Objects.requireNonNull(keyHolder.getKey()).longValue(),
                 reservationRequest.getName(),
                 reservationRequest.getDate(),
                 time,
