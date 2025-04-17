@@ -1,5 +1,8 @@
-package com.yourssu.roomescape.auth;
+package com.yourssu.roomescape.auth.security;
 
+import com.yourssu.roomescape.auth.LoginService;
+import com.yourssu.roomescape.constants.CookieConstants;
+import com.yourssu.roomescape.constants.RoleConstants;
 import com.yourssu.roomescape.infrastructure.CookieProvider;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
@@ -22,11 +25,11 @@ public class RoleCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
-        String token = CookieProvider.findCookieByKey(cookies, "token");
+        String token = CookieProvider.findCookieByKey(cookies, CookieConstants.TOKEN_NAME);
 
         String name = loginService.checkLogin(token);
         Member member = memberRepository.findByName(name);
-        if (member == null || !member.getRole().equals(Role.ADMIN)) {
+        if (member == null || !member.getRole().equals(RoleConstants.ADMIN)) {
             response.setStatus(401);
             return false;
         }
