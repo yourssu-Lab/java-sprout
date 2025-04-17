@@ -1,4 +1,4 @@
-package com.yourssu.roomescape.auth.security;
+package com.yourssu.roomescape.security;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
