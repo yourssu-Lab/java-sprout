@@ -2,7 +2,7 @@ package com.yourssu.roomescape.auth;
 
 import com.yourssu.roomescape.infrastructure.CookieProvider;
 import com.yourssu.roomescape.infrastructure.JwtTokenProvider;
-import com.yourssu.roomescape.member.MemberDao;
+import com.yourssu.roomescape.member.MemberRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
@@ -15,11 +15,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberDao memberDao;
+    private final MemberRepository memberRepository;
 
-    public LoginMemberArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+    public LoginMemberArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberDao = memberDao;
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -35,6 +35,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         String token = CookieProvider.findCookieByKey(cookies, "token");
 
         String memberEmail = jwtTokenProvider.getPayload(token);
-        return memberDao.findByEmail(memberEmail);
+        return memberRepository.findByEmail(memberEmail);
     }
 }

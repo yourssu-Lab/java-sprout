@@ -10,10 +10,10 @@ public class Time {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "time_value")
     private String value;
 
-    public Time(Long id, String value, Reservation reservation) {
+    public Time(Long id, String value) {
         this.id = id;
         this.value = value;
     }
