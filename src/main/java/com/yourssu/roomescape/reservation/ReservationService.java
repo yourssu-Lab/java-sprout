@@ -3,8 +3,6 @@ package com.yourssu.roomescape.reservation;
 import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberService;
-import com.yourssu.roomescape.theme.ThemeDao;
-import com.yourssu.roomescape.time.TimeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,19 +12,13 @@ public class ReservationService {
 
     private final ReservationDao reservationDao;
     private final MemberService memberService;
-    private final ThemeDao themeDao;
-    private final TimeDao timeDao;
 
     public ReservationService(
             ReservationDao reservationDao,
-            MemberService memberService,
-            ThemeDao themeDao,
-            TimeDao timeDao
+            MemberService memberService
     ) {
         this.reservationDao = reservationDao;
         this.memberService = memberService;
-        this.themeDao = themeDao;
-        this.timeDao = timeDao;
     }
 
     public ReservationResponse save(ReservationRequest request, LoginMember loginMember) {

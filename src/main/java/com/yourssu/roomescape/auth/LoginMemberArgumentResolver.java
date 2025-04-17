@@ -4,7 +4,6 @@ import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberDao;
 import com.yourssu.roomescape.util.CookieUtil;
 import com.yourssu.roomescape.util.JwtTokenProvider;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
