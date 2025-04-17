@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.reservation;
 
+import com.yourssu.roomescape.auth.Role;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.theme.ThemeRepository;
@@ -7,6 +8,7 @@ import com.yourssu.roomescape.time.Time;
 import com.yourssu.roomescape.time.TimeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,6 +45,24 @@ public class ReservationService {
     public List<ReservationResponse> findAll() {
         return reservationRepository.findAll().stream()
                 .map(it -> new ReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
+                .toList();
+    }
+
+    public List<ReservationResponse> findReservations(Member member) {
+        if (member.getRole().equals(Role.ADMIN)) {
+            return new ArrayList<>(findReservationsByAdmin(member));
+        } else {
+            return new ArrayList<>(findReservationsByUser(member));
+        }
+    }
+    public List<AdminReservationResponse> findReservationsByAdmin(Member member) {
+        return reservationRepository.findAllByMemberId(member.getId()).stream()
+                .map(it -> new AdminReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
+                .toList();
+    }
+    public List<UserReservationResponse> findReservationsByUser(Member member) {
+        return reservationRepository.findAllByMemberId(member.getId()).stream()
+                .map(it -> new UserReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
                 .toList();
     }
 }
