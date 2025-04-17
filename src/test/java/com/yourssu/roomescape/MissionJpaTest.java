@@ -2,14 +2,12 @@ package com.yourssu.roomescape;
 
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
-import com.yourssu.roomescape.reservation.Reservation;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.theme.ThemeRepository;
 import com.yourssu.roomescape.time.Time;
 import com.yourssu.roomescape.time.TimeRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
