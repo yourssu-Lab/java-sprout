@@ -1,14 +1,17 @@
 package com.yourssu.roomescape;
 
 import com.yourssu.roomescape.infrastructure.JwtTokenProvider;
-import com.yourssu.roomescape.reservation.UserReservationResponse;
-import com.yourssu.roomescape.reservation.ReservationResponse;
+import com.yourssu.roomescape.reservation.dto.UserReservationResponse;
+import com.yourssu.roomescape.reservation.dto.ReservationResponse;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -21,9 +24,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    @Value("${roomescape.auth.jwt.secret}")
+    private String secretKey;
+    private String createToken(String email, String password) {
+        return Jwts.builder()
+                .setSubject("totest")
+                .claim("email", email)
+                .claim("password", password)
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .compact();
+    }
 
     @Test
     void 일단계() {
@@ -55,7 +65,7 @@ public class MissionStepTest {
 
     @Test
     void 이단계() {
-        String token = jwtTokenProvider.createTokenToTest("admin@email.com", "password");  // 일단계에서 토큰을 추출하는 로직을 메서드로 따로 만들어서 활용하세요.
+        String token = createToken("admin@email.com", "password");  // 일단계에서 토큰을 추출하는 로직을 메서드로 따로 만들어서 활용하세요.
 
         Map<String, String> params = new HashMap<>();
         params.put("date", "2024-03-01");
@@ -89,14 +99,14 @@ public class MissionStepTest {
 
     @Test
     void 삼단계() {
-        String brownToken = jwtTokenProvider.createTokenToTest("brown@email.com", "password");
+        String brownToken = createToken("brown@email.com", "password");
         RestAssured.given().log().all()
                 .cookie("token", brownToken)
                 .get("/admin")
                 .then().log().all()
                 .statusCode(401);
 
-        String adminToken = jwtTokenProvider.createTokenToTest("admin@email.com", "password");
+        String adminToken = createToken("admin@email.com", "password");
 
         RestAssured.given().log().all()
                 .cookie("token", adminToken)
@@ -107,7 +117,7 @@ public class MissionStepTest {
 
     @Test
     void 오단계() {
-        String adminToken = jwtTokenProvider.createTokenToTest("admin@email.com", "password");
+        String adminToken = createToken("admin@email.com", "password");
 
         List<UserReservationResponse> reservations = RestAssured.given().log().all()
                 .cookie("token", adminToken)
