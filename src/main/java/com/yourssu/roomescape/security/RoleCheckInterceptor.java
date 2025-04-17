@@ -1,4 +1,4 @@
-package com.yourssu.roomescape.auth.security;
+package com.yourssu.roomescape.security;
 
 import com.yourssu.roomescape.auth.LoginService;
 import com.yourssu.roomescape.constants.CookieConstants;

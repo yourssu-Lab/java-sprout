@@ -1,4 +1,4 @@
-package com.yourssu.roomescape.auth.security;
+package com.yourssu.roomescape.security;
 
 import com.yourssu.roomescape.infrastructure.CookieProvider;
 import com.yourssu.roomescape.infrastructure.JwtTokenProvider;
