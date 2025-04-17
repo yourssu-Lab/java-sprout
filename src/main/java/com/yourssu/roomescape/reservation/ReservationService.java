@@ -1,7 +1,10 @@
 package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.auth.Role;
+import com.yourssu.roomescape.constants.RoleConstants;
 import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.reservation.dto.AdminReservationResponse;
+import com.yourssu.roomescape.reservation.dto.ReservationResponse;
+import com.yourssu.roomescape.reservation.dto.UserReservationResponse;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.theme.ThemeRepository;
 import com.yourssu.roomescape.time.Time;
@@ -49,7 +52,7 @@ public class ReservationService {
     }
 
     public List<ReservationResponse> findReservations(Member member) {
-        if (member.getRole().equals(Role.ADMIN)) {
+        if (member.getRole().equals(RoleConstants.ADMIN)) {
             return new ArrayList<>(findReservationsByAdmin(member));
         } else {
             return new ArrayList<>(findReservationsByUser(member));
