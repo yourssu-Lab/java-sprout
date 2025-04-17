@@ -1,6 +1,5 @@
 package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

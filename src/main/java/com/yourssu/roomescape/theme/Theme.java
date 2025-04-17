@@ -1,7 +1,9 @@
 package com.yourssu.roomescape.theme;
 
-import com.yourssu.roomescape.reservation.Reservation;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 @Entity
 public class Theme {

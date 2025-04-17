@@ -1,8 +1,7 @@
 package com.yourssu.roomescape;
 
-import com.yourssu.roomescape.infrastructure.JwtTokenProvider;
-import com.yourssu.roomescape.reservation.dto.UserReservationResponse;
 import com.yourssu.roomescape.reservation.dto.ReservationResponse;
+import com.yourssu.roomescape.reservation.dto.UserReservationResponse;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.restassured.RestAssured;
@@ -10,7 +9,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
