@@ -23,10 +23,17 @@ public class ReservationService {
 
     public ReservationResponse save(ReservationRequest reservationRequest, Member member) {
         Time time = timeRepository.findById(reservationRequest.getTime()).orElse(null);
-        Theme theme = themeRepository.save(new Theme(String.valueOf(reservationRequest.getTheme())))
-        Reservation reservation = reservationRepository.save(new Reservation(member, reservationRequest.getDate()));
+        Theme theme = themeRepository.findById(reservationRequest.getTheme()).orElse(null);
 
-        return new ReservationResponse(reservation.getId(), reservation, reservation.getDate());
+        String name = (reservationRequest.getName() == null) ? member.getName() : reservationRequest.getName();
+        Reservation reservation = reservationRepository.save(
+                new Reservation(name, member, reservationRequest.getDate(), time, theme));
+        return new ReservationResponse(
+                reservation.getId(),
+                reservation.getName(),
+                reservation.getTheme().getName(),
+                reservation.getDate(),
+                reservation.getTime().getValue());
     }
 
     public void deleteById(Long id) {

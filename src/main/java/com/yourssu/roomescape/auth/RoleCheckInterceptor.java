@@ -2,7 +2,7 @@ package com.yourssu.roomescape.auth;
 
 import com.yourssu.roomescape.infrastructure.CookieProvider;
 import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.member.MemberDao;
+import com.yourssu.roomescape.member.MemberRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,12 +11,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class RoleCheckInterceptor implements HandlerInterceptor {
-    private final MemberDao memberDao;
+    private final MemberRepository memberRepository;
     private final LoginService loginService;
 
-    public RoleCheckInterceptor(LoginService loginService, MemberDao memberDao) {
+    public RoleCheckInterceptor(MemberRepository memberRepository, LoginService loginService) {
+        this.memberRepository = memberRepository;
         this.loginService = loginService;
-        this.memberDao = memberDao;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class RoleCheckInterceptor implements HandlerInterceptor {
         String token = CookieProvider.findCookieByKey(cookies, "token");
 
         String name = loginService.checkLogin(token);
-        Member member = memberDao.findByName(name);
+        Member member = memberRepository.findByName(name);
         if (member == null || !member.getRole().equals(Role.ADMIN)) {
             response.setStatus(401);
             return false;

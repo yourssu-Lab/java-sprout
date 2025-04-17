@@ -2,28 +2,27 @@ package com.yourssu.roomescape.auth;
 
 import com.yourssu.roomescape.infrastructure.JwtTokenProvider;
 import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.member.MemberDao;
+import com.yourssu.roomescape.member.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LoginService {
-    private MemberDao memberDao;
+    private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
-
-    public LoginService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
-        this.memberDao = memberDao;
+    public LoginService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+        this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public String login(LoginRequest loginRequest) {
-        Member member = memberDao.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword());
+        Member member = memberRepository.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword());
         return jwtTokenProvider.createToken(member);
     }
 
     public String checkLogin(String token) {
         String memberEmail = jwtTokenProvider.getPayload(token);
-        Member member = memberDao.findByEmail(memberEmail);
+        Member member = memberRepository.findByEmail(memberEmail);
         return member.getName();
     }
 }
