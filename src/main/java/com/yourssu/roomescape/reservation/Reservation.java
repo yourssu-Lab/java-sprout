@@ -29,16 +29,15 @@ public class Reservation {
     @JoinColumn(name = "time_id")
     private Time time;
 
+    public Reservation() {
+
+    }
     public Reservation(String name, Member member, String date, Time time, Theme theme) {
         this.name = name;
         this.member = member;
         this.date = date;
         this.time = time;
         this.theme = theme;
-    }
-
-    public Reservation() {
-
     }
 
     public Long getId() {

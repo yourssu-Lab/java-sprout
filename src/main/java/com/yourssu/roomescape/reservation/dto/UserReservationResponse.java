@@ -1,4 +1,4 @@
-package com.yourssu.roomescape.reservation;
+package com.yourssu.roomescape.reservation.dto;
 
 public class UserReservationResponse extends ReservationResponse{
     public UserReservationResponse(Long id, String name, String theme, String date, String time) {
