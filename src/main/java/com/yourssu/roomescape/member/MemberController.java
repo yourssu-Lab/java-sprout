@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.member;
 
+import com.yourssu.roomescape.AppConstants;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -7,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -21,9 +21,9 @@ public class MemberController {
     }
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse){
-        LoginResponse loginResponse = memberService.login(loginRequest); // TODO: 여기 변수명과 반환값 이름에 대해서 생각해보기
+        TokenDto tokenDTO = memberService.login(loginRequest); // TODO: 여기 변수명과 반환값 이름에 대해서 생각해보기
 
-        Cookie cookie = new Cookie("token",loginResponse.getToken()); // TODO: constant 프로퍼티로 관리
+        Cookie cookie = new Cookie(AppConstants.TOKEN_COOKIE_NAME, tokenDTO.getToken()); // TODO: constant 프로퍼티로 관리
         httpServletResponse.addCookie(cookie);
 
         return ResponseEntity.ok().build();
@@ -38,7 +38,7 @@ public class MemberController {
 
         // TODO: stream 사용해보기
         for (Cookie cookie : cookies) {
-            if(cookie.getName().equals("token")) {
+            if(cookie.getName().equals(AppConstants.TOKEN_COOKIE_NAME)) {
                 token = cookie.getValue();
             }
         }
@@ -53,7 +53,7 @@ public class MemberController {
 
     @PostMapping("/logout")
     public ResponseEntity logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("token", "");
+        Cookie cookie = new Cookie(AppConstants.TOKEN_COOKIE_NAME, "");
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(0);

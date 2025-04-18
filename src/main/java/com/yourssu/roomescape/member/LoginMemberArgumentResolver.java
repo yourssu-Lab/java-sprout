@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.member;
 
+import com.yourssu.roomescape.AppConstants;
 import com.yourssu.roomescape.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +39,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         String token = "";
 
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("token")) {
+            if (cookie.getName() != null && AppConstants.TOKEN_COOKIE_NAME.equals(cookie.getName())) {
                 token = cookie.getValue();
                 break;
             }

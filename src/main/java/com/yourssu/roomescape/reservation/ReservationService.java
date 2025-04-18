@@ -19,50 +19,36 @@ public class ReservationService {
 
     public ReservationResponse save(ReservationRequest reservationRequest) {
         Reservation reservation = reservationDao.save(reservationRequest);
-        return new ReservationResponse(reservation.getId(), reservationRequest.getName(), reservation.getTheme().getName(), reservation.getDate(), reservation.getTime().getValue());
-    }
-
-    public ReservationResponse save(ReservationRequest reservationRequest, LoginMember loginMember) {
-        // name이 있으면 그대로 사용하고, 없으면 로그인 멤버의 이름을 사용
-        String reservationName = reservationRequest.getName() != null
-                ? reservationRequest.getName()
-                : loginMember.getName();
-
-        // 기존 ReservationRequest를 확장하여 이름을 설정
-        ReservationRequest finalRequest = new ReservationRequest() {
-            @Override
-            public String getName() {
-                return reservationName;
-            }
-
-            @Override
-            public String getDate() {
-                return reservationRequest.getDate();
-            }
-
-            @Override
-            public Long getTheme() {
-                return reservationRequest.getTheme();
-            }
-
-            @Override
-            public Long getTime() {
-                return reservationRequest.getTime();
-            }
-        };
-
-        // 기존 save 메서드를 호출하여 예약 저장
-        Reservation reservation = reservationDao.save(finalRequest);
-
         return new ReservationResponse(
                 reservation.getId(),
-                reservationName,
+                reservationRequest.getName(),
                 reservation.getTheme().getName(),
                 reservation.getDate(),
                 reservation.getTime().getValue()
         );
     }
 
+    public ReservationResponse save(ReservationRequest reservationRequest, LoginMember loginMember) {
+        // Create a new ReservationRequest with all the data we need
+        ReservationRequestDto finalRequest = new ReservationRequestDto(
+                reservationRequest.getName() != null ? reservationRequest.getName() : loginMember.getName(),
+                reservationRequest.getDate(),
+                reservationRequest.getTheme(),
+                reservationRequest.getTime()
+        );
+
+        // Use the DAO to save the reservation
+        Reservation reservation = reservationDao.save(finalRequest);
+
+        // Return the response
+        return new ReservationResponse(
+                reservation.getId(),
+                finalRequest.getName(),
+                reservation.getTheme().getName(),
+                reservation.getDate(),
+                reservation.getTime().getValue()
+        );
+    }
 
     public void deleteById(Long id) {
         reservationDao.deleteById(id);
@@ -72,5 +58,39 @@ public class ReservationService {
         return reservationDao.findAll().stream()
                 .map(it -> new ReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
                 .toList();
+    }
+
+    private static class ReservationRequestDto extends ReservationRequest {
+        private final String name;
+        private final String date;
+        private final Long theme;
+        private final Long time;
+
+        public ReservationRequestDto(String name, String date, Long theme, Long time) {
+            this.name = name;
+            this.date = date;
+            this.theme = theme;
+            this.time = time;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String getDate() {
+            return date;
+        }
+
+        @Override
+        public Long getTheme() {
+            return theme;
+        }
+
+        @Override
+        public Long getTime() {
+            return time;
+        }
     }
 }

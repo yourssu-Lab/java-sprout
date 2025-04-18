@@ -1,10 +1,10 @@
 package com.yourssu.roomescape.member;
 
-public class LoginResponse {
+public class TokenDto {
 
     private String token;
 
-    public LoginResponse(final String token) {
+    public TokenDto(final String token) {
         this.token = token;
     }
 
