@@ -23,6 +23,12 @@ public class ThemeDao {
         ));
     }
 
+    public Theme findById(Long id) {
+        return jdbcTemplate.queryForObject("SELECT * FROM theme WHERE id = ?",
+                (rs, rowNum) -> new Theme(rs.getLong("id"), rs.getString("name"), rs.getString("description")),
+                id);
+    }
+
     public Theme save(Theme theme) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
