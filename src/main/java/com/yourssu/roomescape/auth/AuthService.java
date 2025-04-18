@@ -17,7 +17,7 @@ public class AuthService {
     }
 
     public String login(LoginRequest loginRequest) {
-        Member member = memberDao.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword());
+        Member member = memberDao.findByEmailAndPassword(loginRequest.email(), loginRequest.password());
         return tokenProvider.createToken(member.getEmail());
     }
 
