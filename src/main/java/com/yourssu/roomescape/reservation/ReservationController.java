@@ -1,6 +1,8 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.auth.LoginMember;
+import com.yourssu.roomescape.exception.CustomException;
+import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.member.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,10 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public ResponseEntity<ReservationResponse> create(@RequestBody ReservationRequest reservationRequest, @LoginMember Member member) {
+        if (reservationRequest.getDate() == null || reservationRequest.getTheme() == null || reservationRequest.getTime() == null) {
+            throw new CustomException(ErrorCode.INVALID_RESERVATION_REQUEST);
+        }
+
         ReservationResponse reservation = reservationService.save(reservationRequest, member);
 
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
