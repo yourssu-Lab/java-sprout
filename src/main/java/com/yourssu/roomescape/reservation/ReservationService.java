@@ -20,16 +20,15 @@ public class ReservationService {
     }
 
     public ReservationResponse save(ReservationRequest reservationRequest, Member member) {
-        if (reservationRequest.getDate() == null || reservationRequest.getTheme() == null || reservationRequest.getTime() == null) {
-            throw new CustomException(ErrorCode.INVALID_RESERVATION_REQUEST);
-        }
+        String memberName = reservationRequest.getName();
 
-        String memberName = Optional.ofNullable(reservationRequest.getName())
-                .map(name -> {
-                    Member existingMember = memberDao.findByName(name);
-                    return existingMember.getName();
-                })
-                .orElse(member.getName());
+        if (memberName != null) {
+            Member existingMember = memberDao.findByName(memberName)
+                    .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+            memberName = existingMember.getName();
+        } else {
+            memberName = member.getName();
+        }
 
         ReservationRequest updatedRequest = new ReservationRequest(
                 memberName,
