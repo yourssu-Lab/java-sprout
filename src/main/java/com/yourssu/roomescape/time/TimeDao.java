@@ -24,6 +24,12 @@ public class TimeDao {
                         rs.getString("time_value")));
     }
 
+    public Time findById(Long id) {
+        return jdbcTemplate.queryForObject("SELECT * FROM time WHERE id = ?",
+                (rs, rowNum) -> new Time(rs.getLong("id"), rs.getString("time_value")),
+                id);
+    }
+
     public Time save(Time time) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         this.jdbcTemplate.update(connection -> {
