@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+
 @RestController
 public class AuthController {
 
@@ -20,20 +22,21 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
 
         String accessToken = authService.login(loginRequest);
         Cookie cookie = new Cookie("token", accessToken);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setMaxAge(0);
         response.addCookie(cookie);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/login/check")
     public ResponseEntity<CheckLoginResponse> loginCheck(HttpServletRequest request) {
+
         Cookie[] cookies = request.getCookies();
+        System.out.println(Arrays.toString(cookies));
         String token = TokenExtractor.extractTokenFromCookies(cookies);
 
         String name = authService.checkLogin(token).getName();

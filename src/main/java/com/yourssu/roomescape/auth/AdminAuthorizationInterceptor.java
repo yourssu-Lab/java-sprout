@@ -1,5 +1,7 @@
 package com.yourssu.roomescape.auth;
 
+import com.yourssu.roomescape.exception.CustomException;
+import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.jwt.TokenExtractor;
 import com.yourssu.roomescape.member.Member;
 import jakarta.servlet.http.Cookie;
