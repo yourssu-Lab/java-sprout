@@ -18,8 +18,14 @@ public class Reservation {
         this.theme = theme;
     }
 
-    public Reservation(String name, String date, Time time, Theme theme) {
+    public Reservation(String name, String date, Theme theme, Time time) {
         this.name = name;
+        this.date = date;
+        this.theme = theme;
+        this.time = time;
+    }
+
+    public Reservation(String date, Time time, Theme theme) {
         this.date = date;
         this.time = time;
         this.theme = theme;
