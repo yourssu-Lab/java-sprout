@@ -1,6 +1,7 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.member.LoginMember;
+import com.yourssu.roomescape.member.MemberFinder;
 import com.yourssu.roomescape.utils.TokenUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,11 +16,10 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
-    private final TokenUtil tokenUtil;
 
-    public ReservationController(ReservationService reservationService, TokenUtil tokenUtil) {
+    public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
-        this.tokenUtil = tokenUtil;
+
     }
 
     @GetMapping("/reservations")
@@ -51,4 +51,11 @@ public class ReservationController {
 
         return ResponseEntity.ok(reservationService.reservationMine(loginMember));
     }
+
+    @PostMapping("/waitings")
+    public ResponseEntity<ReservationResponse> wait(@RequestBody ReservationWaitingRequest reservationWaitingRequest, LoginMember member){
+        ReservationResponse response = reservationService.waitReservation(member, reservationWaitingRequest);
+        return ResponseEntity.created(URI.create("/waitings/" + response.getId())).body(response);
+    }
 }
+

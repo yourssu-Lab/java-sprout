@@ -1,6 +1,7 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.reservation.enums.ReservationStatus;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
 import jakarta.persistence.*;
@@ -26,11 +27,15 @@ public class Reservation {
     @JoinColumn(name = "theme_id")
     private Theme theme;
 
-    public Reservation(Member member, String date, Time time, Theme theme) {
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status;
+
+    public Reservation(Member member, String date, Time time, Theme theme, ReservationStatus status) {
         this.member = member;
         this.date = date;
         this.time = time;
         this.theme = theme;
+        this.status = status;
     }
 
     public Reservation() {
@@ -55,5 +60,9 @@ public class Reservation {
 
     public Theme getTheme() {
         return theme;
+    }
+
+    public ReservationStatus getStatus(){
+        return status;
     }
 }
