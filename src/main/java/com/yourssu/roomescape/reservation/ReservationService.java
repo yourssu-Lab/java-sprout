@@ -57,13 +57,12 @@ public class ReservationService {
                 .toList();
     }
 
-    public List<MineReservationResponse> listMine(LoginMember loginMember){
+    public List<MineReservationResponse> reservationMine(LoginMember loginMember){
         Member findMember = memberRepository.findById(loginMember.getId())
                 .orElseThrow(() -> new IllegalArgumentException(NO_EXIST_MEMBER.getMessage()));
 
         return reservationRepository.findByMember(findMember).stream()
                 .map(it -> new MineReservationResponse(it.getId(), it.getTheme().getName(), it.getDate(), it.getTime().getValue(), "예약"))
                 .toList();
-
     }
 }

@@ -8,7 +8,7 @@ public class Time {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "time_value")
     private String value;
 
     public Time(Long id, String value) {
