@@ -46,7 +46,7 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/reservation")
+    @GetMapping("/reservations-mine")
     public ResponseEntity<List<MineReservationResponse>> reservationMine(LoginMember loginMember){
 
         return ResponseEntity.ok(reservationService.reservationMine(loginMember));
