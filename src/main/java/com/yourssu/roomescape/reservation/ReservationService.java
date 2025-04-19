@@ -59,7 +59,7 @@ public class ReservationService {
         if (findReservation.getStatus() == ReservationStatus.WAITING)
             reservationRepository.deleteById(id);
         else {
-            throw new IllegalStateException("예약은 대기 상태일 때만 취소할 수 있습니다.");
+            throw new IllegalStateException(CANCLE_DENY_RESERVATION.getMessage());
         }
     }
 
@@ -83,7 +83,10 @@ public class ReservationService {
 
         Member findMember = memberFinder.findMember(loginMember);
 
-        Reservation reservation = reservationRepository.save(new Reservation(findMember, request.date(), time, theme, ReservationStatus.RESERVATION));
+        if (reservationRepository.findByDateAndThemeAndTimeAndMember(request.date(), theme, time, findMember))
+            throw new IllegalStateException(ALREADY_EXIST_RESERVATION.getMessage());
+
+        Reservation reservation = reservationRepository.save(new Reservation(findMember, request.date(), time, theme, ReservationStatus.WAITING));
 
         return new ReservationResponse(reservation.getId(), findMember.getName(), reservation.getTheme().getName(), reservation.getDate(), reservation.getTime().getValue());
 
