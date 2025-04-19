@@ -16,7 +16,3 @@ public class LoginCheckResponse {
         this.name = name;
     }
 }
-
-
-// 객체 생성의 정석
-// 변수 생성자 게터
