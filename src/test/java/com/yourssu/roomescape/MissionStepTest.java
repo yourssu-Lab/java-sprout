@@ -1,5 +1,6 @@
 package com.yourssu.roomescape;
 
+import com.yourssu.roomescape.reservation.MineReservationResponse;
 import com.yourssu.roomescape.reservation.ReservationResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -106,4 +108,60 @@ public class MissionStepTest {
         return response.headers().get("Set-Cookie").getValue().split(";")[0].split("=")[1];
 
     }
+
+    @Test
+    void 오단계() {
+        String adminToken = createToken("admin@email.com", "password");
+
+        List<MineReservationResponse> reservations = RestAssured.given().log().all()
+                .cookie("token", adminToken)
+                .get("/reservations-mine")
+                .then().log().all()
+                .statusCode(200)
+                .extract().jsonPath().getList(".", MineReservationResponse.class);
+
+        assertThat(reservations).hasSize(3);
+    }
+
+        @Test
+        void 육단계() {
+            String brownToken = createToken("brown@email.com", "password");
+
+            Map<String, String> params = new HashMap<>();
+            params.put("date", "2024-03-01");
+            params.put("time", "1");
+            params.put("theme", "1");
+
+            // 예약 대기 생성
+            ReservationResponse waiting = RestAssured.given().log().all()
+                    .body(params)
+                    .cookie("token", brownToken)
+                    .contentType(ContentType.JSON)
+                    .post("/waitings")
+                    .then().log().all()
+                    .statusCode(201)
+                    .extract().as(ReservationResponse.class);
+
+
+            // 내 예약 목록 조회
+            List<MineReservationResponse> myReservations = RestAssured.given().log().all()
+                    .body(params)
+                    .cookie("token", brownToken)
+                    .contentType(ContentType.JSON)
+                    .get("/reservations-mine")
+                    .then().log().all()
+                    .statusCode(200)
+                    .extract().jsonPath().getList(".", MineReservationResponse.class);
+
+            // 예약 대기 상태 확인
+            /*String status = myReservations.stream()
+                    .filter(it -> it.getId() == waiting.getId())
+                    .filter(it -> !it.getStatus().equals("예약"))
+                    .findFirst()
+                    .map(it -> it.getStatus())
+                    .orElse(null);
+
+            assertThat(status).isEqualTo("1번째 예약대기");*/
+        }
+
 }
