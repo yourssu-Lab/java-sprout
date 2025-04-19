@@ -3,7 +3,7 @@ package com.yourssu.roomescape.reservation;
 import com.yourssu.roomescape.exception.CustomException;
 import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.member.MemberDao;
+import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.theme.ThemeDao;
 import com.yourssu.roomescape.time.Time;
@@ -11,60 +11,68 @@ import com.yourssu.roomescape.time.TimeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
-    private final ReservationDao reservationDao;
-    private final MemberDao memberDao;
+    private final ReservationRepository reservationRepository;
+    private final MemberRepository memberRepository;
     private final ThemeDao themeDao;
     private final TimeDao timeDao;
 
-    public ReservationService(ReservationDao reservationDao, MemberDao memberDao, ThemeDao themeDao, TimeDao timeDao) {
-        this.reservationDao = reservationDao;
-        this.memberDao = memberDao;
+    public ReservationService(ReservationRepository reservationRepository, MemberRepository memberRepository, ThemeDao themeDao, TimeDao timeDao) {
+        this.reservationRepository = reservationRepository;
+        this.memberRepository = memberRepository;
         this.themeDao = themeDao;
         this.timeDao = timeDao;
     }
 
-    public ReservationResponse save(ReservationRequest reservationRequest, Member member) {
-        String memberName = reservationRequest.getName();
+    public ReservationSaveResponse save(ReservationSaveRequest reservationSaveRequest, Member member) {
 
-        if (memberName != null) {
-            Member existingMember = memberDao.findByName(memberName)
+        Member existingMember;
+
+        if (reservationSaveRequest.getName() != null) {
+            existingMember = memberRepository.findByName(reservationSaveRequest.getName())
                     .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-            memberName = existingMember.getName();
         } else {
-            memberName = member.getName();
+            existingMember = member;
         }
 
-        Time time = timeDao.findById(reservationRequest.getTime());
-        Theme theme = themeDao.findById(reservationRequest.getTheme());
+        Time time = timeDao.findById(reservationSaveRequest.getTime());
+        Theme theme = themeDao.findById(reservationSaveRequest.getTheme());
 
         Reservation reservation = new Reservation(
-                memberName,
-                reservationRequest.getDate(),
+                existingMember,
+                reservationSaveRequest.getDate(),
                 time,
                 theme
         );
 
-        Reservation newReservation = reservationDao.save(reservation);
+        Reservation newReservation = reservationRepository.save(reservation);
 
-        return new ReservationResponse(
+        return new ReservationSaveResponse(
                 newReservation.getId(),
-                newReservation.getName(),
+                newReservation.getMember().getName(),
                 newReservation.getTheme().getName(),
                 newReservation.getDate(),
                 newReservation.getTime().getValue());
     }
 
     public void deleteById(Long id) {
-        reservationDao.deleteById(id);
+        reservationRepository.deleteById(id);
     }
 
-    public List<ReservationResponse> findAll() {
-        return reservationDao.findAll().stream()
-                .map(it -> new ReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
-                .toList();
+    public List<ReservationFindAllResponse> findAll(Member member) {
+        List<Reservation> reservations = reservationRepository.findByMember(member);
+
+        return reservations.stream()
+                .map(reservation -> new ReservationFindAllResponse(
+                        reservation.getId(),
+                        reservation.getTheme().getName(),
+                        reservation.getDate(),
+                        reservation.getTime().getValue(),
+                        "예약"
+                ))
+                .collect(Collectors.toList());
     }
 }

@@ -1,23 +1,23 @@
 package com.yourssu.roomescape.time;
 
 import com.yourssu.roomescape.reservation.Reservation;
-import com.yourssu.roomescape.reservation.ReservationDao;
+import com.yourssu.roomescape.reservation.ReservationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TimeService {
-    private TimeDao timeDao;
-    private ReservationDao reservationDao;
+    private final TimeDao timeDao;
+    private final ReservationRepository reservationRepository;
 
-    public TimeService(TimeDao timeDao, ReservationDao reservationDao) {
+    public TimeService(TimeDao timeDao, ReservationRepository reservationRepository) {
         this.timeDao = timeDao;
-        this.reservationDao = reservationDao;
+        this.reservationRepository = reservationRepository;
     }
 
     public List<AvailableTime> getAvailableTime(String date, Long themeId) {
-        List<Reservation> reservations = reservationDao.findByDateAndThemeId(date, themeId);
+        List<Reservation> reservations = reservationRepository.findByDateAndThemeId(date, themeId);
         List<Time> times = timeDao.findAll();
 
         return times.stream()

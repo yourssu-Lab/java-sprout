@@ -2,7 +2,8 @@ package com.yourssu.roomescape;
 
 import com.yourssu.roomescape.auth.AuthService;
 import com.yourssu.roomescape.auth.LoginRequest;
-import com.yourssu.roomescape.reservation.ReservationResponse;
+import com.yourssu.roomescape.reservation.ReservationFindAllResponse;
+import com.yourssu.roomescape.reservation.ReservationSaveResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,7 +73,7 @@ public class MissionStepTest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(201);
-        assertThat(response.as(ReservationResponse.class).getName()).isEqualTo("어드민");
+        assertThat(response.as(ReservationSaveResponse.class).getName()).isEqualTo("어드민");
 
         params.put("name", "브라운");
 
@@ -84,7 +86,7 @@ public class MissionStepTest {
                 .extract();
 
         assertThat(adminResponse.statusCode()).isEqualTo(201);
-        assertThat(adminResponse.as(ReservationResponse.class).getName()).isEqualTo("브라운");
+        assertThat(adminResponse.as(ReservationSaveResponse.class).getName()).isEqualTo("브라운");
     }
 
     @Test
@@ -106,5 +108,20 @@ public class MissionStepTest {
                 .get("/admin")
                 .then().log().all()
                 .statusCode(200);
+    }
+
+    @Test
+    void 오단계() {
+        LoginRequest loginRequest = new LoginRequest("admin@email.com", "password");
+        String adminToken = authService.login(loginRequest);
+
+        List<ReservationFindAllResponse> reservations = RestAssured.given().log().all()
+                .cookie("token", adminToken)
+                .get("/reservations-mine")
+                .then().log().all()
+                .statusCode(200)
+                .extract().jsonPath().getList(".", ReservationFindAllResponse.class);
+
+        assertThat(reservations).hasSize(3);
     }
 }

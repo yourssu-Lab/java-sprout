@@ -1,12 +1,12 @@
-CREATE TABLE time
+CREATE TABLE IF NOT EXISTS time
 (
-    id         BIGINT      NOT NULL AUTO_INCREMENT,
+    id         BIGINT      AUTO_INCREMENT,
     time_value VARCHAR(20) NOT NULL,
     deleted    BOOLEAN     NOT NULL DEFAULT FALSE,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE theme
+CREATE TABLE IF NOT EXISTS theme
 (
     id          BIGINT       NOT NULL AUTO_INCREMENT,
     name        VARCHAR(255) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE theme
     PRIMARY KEY (id)
 );
 
-CREATE TABLE member
+CREATE TABLE IF NOT EXISTS member
 (
     id       BIGINT              NOT NULL AUTO_INCREMENT,
     name     VARCHAR(255)        NOT NULL,
@@ -25,14 +25,15 @@ CREATE TABLE member
     PRIMARY KEY (id)
 );
 
-CREATE TABLE reservation
+CREATE TABLE IF NOT EXISTS reservation
 (
     id       BIGINT       NOT NULL AUTO_INCREMENT,
     date     VARCHAR(255) NOT NULL,
-    name     VARCHAR(255) NOT NULL,
+    member_id  BIGINT,
     time_id  BIGINT,
     theme_id BIGINT,
     PRIMARY KEY (id),
+    FOREIGN KEY (member_id) REFERENCES member (id),
     FOREIGN KEY (time_id) REFERENCES time (id),
     FOREIGN KEY (theme_id) REFERENCES theme (id)
 );
@@ -54,7 +55,8 @@ VALUES ('10:00'),
        ('18:00'),
        ('20:00');
 
-INSERT INTO reservation (name, date, time_id, theme_id)
-VALUES ('어드민', '2024-03-01', 1, 1),
-       ('어드민', '2024-03-01', 2, 2),
-       ('어드민', '2024-03-01', 3, 3);
+INSERT INTO reservation (member_id, date, time_id, theme_id)
+VALUES
+    (1, '2024-03-01', 1, 1),
+    (1, '2024-03-01', 2, 2),
+    (1, '2024-03-01', 3, 3);

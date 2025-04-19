@@ -4,7 +4,6 @@ import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.exception.CustomException;
 import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.theme.ThemeDao;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,18 +19,18 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/reservations")
-    public List<ReservationResponse> list() {
-        return reservationService.findAll();
+    @GetMapping("/reservations-mine")
+    public List<ReservationFindAllResponse> list(@LoginMember Member member) {
+        return reservationService.findAll(member);
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponse> create(@RequestBody ReservationRequest reservationRequest, @LoginMember Member member) {
-        if (reservationRequest.getDate() == null || reservationRequest.getTheme() == null || reservationRequest.getTime() == null) {
+    public ResponseEntity<ReservationSaveResponse> create(@RequestBody ReservationSaveRequest reservationSaveRequest, @LoginMember Member member) {
+        if (reservationSaveRequest.getDate() == null || reservationSaveRequest.getTheme() == null || reservationSaveRequest.getTime() == null) {
             throw new CustomException(ErrorCode.INVALID_RESERVATION_REQUEST);
         }
 
-        ReservationResponse reservation = reservationService.save(reservationRequest, member);
+        ReservationSaveResponse reservation = reservationService.save(reservationSaveRequest, member);
 
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
     }
