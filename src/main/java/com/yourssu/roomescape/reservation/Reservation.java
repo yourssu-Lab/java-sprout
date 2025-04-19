@@ -2,12 +2,21 @@ package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
+import jakarta.persistence.*;
 
+@Entity
 public class Reservation {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String date;
+
+    @OneToOne
     private Time time;
+
+    @OneToOne
     private Theme theme;
 
     public Reservation(Long id, String name, String date, Time time, Theme theme) {
