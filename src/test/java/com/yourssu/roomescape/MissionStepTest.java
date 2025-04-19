@@ -1,5 +1,6 @@
 package com.yourssu.roomescape;
 
+import com.yourssu.roomescape.reservation.MineReservationResponse;
 import com.yourssu.roomescape.reservation.ReservationResponse;
 import com.yourssu.roomescape.time.Time;
 import com.yourssu.roomescape.time.TimeRepository;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -110,5 +112,19 @@ public class MissionStepTest {
 
         return response.headers().get("Set-Cookie").getValue().split(";")[0].split("=")[1];
 
+    }
+
+    @Test
+    void 오단계() {
+        String adminToken = createToken("admin@email.com", "password");
+
+        List<MineReservationResponse> reservations = RestAssured.given().log().all()
+                .cookie("token", adminToken)
+                .get("/reservations-mine")
+                .then().log().all()
+                .statusCode(200)
+                .extract().jsonPath().getList(".", MineReservationResponse.class);
+
+        assertThat(reservations).hasSize(3);
     }
 }

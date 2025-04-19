@@ -17,4 +17,5 @@ VALUES ('10:00'),
 
 INSERT INTO reservation (member_id, date, time_id, theme_id)
 VALUES (1, '2024-03-01', 1, 1),
-       (2, '2024-03-01', 2, 2);
+       (1, '2024-03-01', 2, 2),
+       (1, '2024-03-01', 3, 3);
