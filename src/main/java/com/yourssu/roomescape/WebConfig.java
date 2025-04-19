@@ -1,7 +1,7 @@
 package com.yourssu.roomescape;
 
-import com.yourssu.roomescape.auth.LoginMemberArgumentResolver;
-import com.yourssu.roomescape.auth.RoleCheckInterceptor;
+import com.yourssu.roomescape.security.LoginMemberArgumentResolver;
+import com.yourssu.roomescape.security.RoleCheckInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

@@ -1,7 +1,8 @@
 package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.reservation.dto.ReservationResponse;
+import com.yourssu.roomescape.security.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,4 +40,10 @@ public class ReservationController {
         reservationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/reservations-mine")
+    public ResponseEntity<List<ReservationResponse>> getReservationList(@LoginMember Member member) {
+        return ResponseEntity.ok().body(reservationService.findReservations(member));
+    }
+
 }
