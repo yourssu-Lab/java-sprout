@@ -1,5 +1,8 @@
 package com.yourssu.roomescape.time;
 
+import lombok.Getter;
+
+@Getter
 public class AvailableTime {
     private Long timeId;
     private String time;
@@ -11,15 +14,4 @@ public class AvailableTime {
         this.booked = booked;
     }
 
-    public Long getTimeId() {
-        return timeId;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public boolean isBooked() {
-        return booked;
-    }
 }

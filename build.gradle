@@ -24,15 +24,22 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.4.4'
 
     implementation 'dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.5.1'
+    implementation 'ch.qos.logback:logback-access:1.4.14'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
     implementation 'io.jsonwebtoken:jjwt-gson:0.12.6'
 
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     runtimeOnly 'com.h2database:h2:2.3.232'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.4.4'
     testImplementation 'io.rest-assured:rest-assured:5.5.1'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 tasks.named('test') {

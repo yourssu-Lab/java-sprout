@@ -1,4 +1,4 @@
-package com.yourssu.roomescape.member;
+package com.yourssu.roomescape.auth;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
-public class MemberRequest {
-    private final String name;
+public class AuthRequest {
     private final String email;
     private final String password;
 }

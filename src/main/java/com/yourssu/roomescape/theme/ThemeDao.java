@@ -6,10 +6,11 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class ThemeDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ThemeDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -32,7 +33,7 @@ public class ThemeDao {
             return ps;
         }, keyHolder);
 
-        return new Theme(keyHolder.getKey().longValue(), theme.getName(), theme.getDescription());
+        return new Theme(Objects.requireNonNull(keyHolder.getKey()).longValue(), theme.getName(), theme.getDescription());
     }
 
     public void deleteById(Long id) {

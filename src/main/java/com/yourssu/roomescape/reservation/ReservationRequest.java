@@ -1,24 +1,29 @@
 package com.yourssu.roomescape.reservation;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
 public class ReservationRequest {
-    private String name;
-    private String date;
-    private Long theme;
-    private Long time;
+    private final String name; // Optional: 관리자만 사용
 
-    public String getName() {
-        return name;
+    @NotBlank(message = "예약 날짜는 필수입니다.")
+    private final String date;
+
+    @NotNull(message = "예약 시간은 필수입니다.")
+    private final Long time;
+
+    @NotNull(message = "테마 ID는 필수입니다.")
+    private final Long theme;
+
+    public ReservationRequest withName(String name) {
+        return new ReservationRequest(name, this.date, this.time, this.theme);
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public Long getTheme() {
-        return theme;
-    }
-
-    public Long getTime() {
-        return time;
-    }
 }

@@ -1,21 +1,35 @@
 package com.yourssu.roomescape.reservation;
 
+import com.yourssu.roomescape.auth.LoginMember;
+import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.member.MemberService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ReservationService {
-    private ReservationDao reservationDao;
 
-    public ReservationService(ReservationDao reservationDao) {
+    private final ReservationDao reservationDao;
+    private final MemberService memberService;
+
+    public ReservationService(
+            ReservationDao reservationDao,
+            MemberService memberService
+    ) {
         this.reservationDao = reservationDao;
+        this.memberService = memberService;
     }
 
-    public ReservationResponse save(ReservationRequest reservationRequest) {
-        Reservation reservation = reservationDao.save(reservationRequest);
+    public ReservationResponse save(ReservationRequest request, LoginMember loginMember) {
+        Member member = (request.getName() != null && !request.getName().isBlank())
+                ? memberService.findByName(request.getName())
+                : memberService.findByEmail(loginMember.getEmail());
 
-        return new ReservationResponse(reservation.getId(), reservationRequest.getName(), reservation.getTheme().getName(), reservation.getDate(), reservation.getTime().getValue());
+        ReservationRequest filledRequest = request.withName(member.getName());
+        Reservation reservation = reservationDao.save(filledRequest);
+
+        return ReservationResponse.of(reservation);
     }
 
     public void deleteById(Long id) {
