@@ -8,21 +8,26 @@ import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.theme.ThemeDao;
 import com.yourssu.roomescape.time.Time;
 import com.yourssu.roomescape.time.TimeDao;
+import com.yourssu.roomescape.waiting.WaitingRepository;
+import com.yourssu.roomescape.waiting.WaitingWithRank;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final MemberRepository memberRepository;
+    private final WaitingRepository waitingRepository;
     private final ThemeDao themeDao;
     private final TimeDao timeDao;
 
-    public ReservationService(ReservationRepository reservationRepository, MemberRepository memberRepository, ThemeDao themeDao, TimeDao timeDao) {
+    public ReservationService(ReservationRepository reservationRepository, MemberRepository memberRepository, WaitingRepository waitingRepository, ThemeDao themeDao, TimeDao timeDao) {
         this.reservationRepository = reservationRepository;
         this.memberRepository = memberRepository;
+        this.waitingRepository = waitingRepository;
         this.themeDao = themeDao;
         this.timeDao = timeDao;
     }
@@ -64,15 +69,24 @@ public class ReservationService {
 
     public List<ReservationFindAllResponse> findAll(Member member) {
         List<Reservation> reservations = reservationRepository.findByMember(member);
+        List<WaitingWithRank> waitingsWithRank = waitingRepository.findWaitingsWithRankByMember(member);
 
-        return reservations.stream()
-                .map(reservation -> new ReservationFindAllResponse(
-                        reservation.getId(),
-                        reservation.getTheme().getName(),
-                        reservation.getDate(),
-                        reservation.getTime().getValue(),
-                        "예약"
-                ))
+        return Stream.concat(
+                        reservations.stream().map(reservation -> new ReservationFindAllResponse(
+                                reservation.getId(),
+                                reservation.getTheme().getName(),
+                                reservation.getDate(),
+                                reservation.getTime().getValue(),
+                                "예약"
+                        )),
+                        waitingsWithRank.stream().map(waitingWithRank -> new ReservationFindAllResponse(
+                                waitingWithRank.getWaiting().getId(),
+                                waitingWithRank.getWaiting().getTheme().getName(),
+                                waitingWithRank.getWaiting().getDate(),
+                                waitingWithRank.getWaiting().getTime().getValue(),
+                                (waitingWithRank.getRank() + 1) + "번째 예약대기"
+                        ))
+                )
                 .collect(Collectors.toList());
     }
 }

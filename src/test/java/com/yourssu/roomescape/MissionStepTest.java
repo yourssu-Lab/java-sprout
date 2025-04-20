@@ -4,6 +4,7 @@ import com.yourssu.roomescape.auth.AuthService;
 import com.yourssu.roomescape.auth.LoginRequest;
 import com.yourssu.roomescape.reservation.ReservationFindAllResponse;
 import com.yourssu.roomescape.reservation.ReservationSaveResponse;
+import com.yourssu.roomescape.waiting.WaitingSaveResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
@@ -123,5 +124,46 @@ public class MissionStepTest {
                 .extract().jsonPath().getList(".", ReservationFindAllResponse.class);
 
         assertThat(reservations).hasSize(3);
+    }
+
+    @Test
+    void 육단계() {
+        LoginRequest loginRequest = new LoginRequest("brown@email.com", "password");
+        String brownToken = authService.login(loginRequest);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("date", "2024-03-01");
+        params.put("timeId", "1");
+        params.put("themeId", "1");
+
+        // 예약 대기 생성
+        WaitingSaveResponse waiting = RestAssured.given().log().all()
+                .body(params)
+                .cookie("token", brownToken)
+                .contentType(ContentType.JSON)
+                .post("/waitings")
+                .then().log().all()
+                .statusCode(201)
+                .extract().as(WaitingSaveResponse.class);
+
+        // 내 예약 목록 조회
+        List<ReservationFindAllResponse> myReservations = RestAssured.given().log().all()
+                .body(params)
+                .cookie("token", brownToken)
+                .contentType(ContentType.JSON)
+                .get("/reservations-mine")
+                .then().log().all()
+                .statusCode(200)
+                .extract().jsonPath().getList(".", ReservationFindAllResponse.class);
+
+        // 예약 대기 상태 확인
+        String status = myReservations.stream()
+                .filter(it -> it.reservationId() == waiting.waitingId())
+                .filter(it -> !it.status().equals("예약"))
+                .findFirst()
+                .map(ReservationFindAllResponse::status)
+                .orElse(null);
+
+        assertThat(status).isEqualTo("1번째 예약대기");
     }
 }
