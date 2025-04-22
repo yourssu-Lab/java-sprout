@@ -1,6 +1,5 @@
 package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.constants.RoleConstants;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.reservation.dto.AdminReservationResponse;
 import com.yourssu.roomescape.reservation.dto.ReservationResponse;
@@ -11,7 +10,6 @@ import com.yourssu.roomescape.time.Time;
 import com.yourssu.roomescape.time.TimeRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,7 +28,13 @@ public class ReservationService {
         Time time = timeRepository.findById(reservationRequest.getTime()).orElse(null);
         Theme theme = themeRepository.findById(reservationRequest.getTheme()).orElse(null);
 
-        String name = (reservationRequest.getName() == null) ? member.getName() : reservationRequest.getName();
+        String name;
+        if (reservationRequest.getName() == null) {
+            name = member.getName();
+        } else {
+            name = reservationRequest.getName();
+        }
+
         Reservation reservation = reservationRepository.save(
                 new Reservation(name, member, reservationRequest.getDate(), time, theme));
         return new ReservationResponse(
@@ -51,13 +55,6 @@ public class ReservationService {
                 .toList();
     }
 
-    public List<ReservationResponse> findReservations(Member member) {
-        if (member.getRole().equals(RoleConstants.ADMIN)) {
-            return new ArrayList<>(findReservationsByAdmin(member));
-        } else {
-            return new ArrayList<>(findReservationsByUser(member));
-        }
-    }
     public List<AdminReservationResponse> findReservationsByAdmin(Member member) {
         return reservationRepository.findAllByMemberId(member.getId()).stream()
                 .map(it -> new AdminReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
