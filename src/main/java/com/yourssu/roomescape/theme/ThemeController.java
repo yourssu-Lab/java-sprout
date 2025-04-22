@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 public class ThemeController {
-    private ThemeRepository themeRepository;
+    private final ThemeRepository themeRepository;
 
     public ThemeController(ThemeRepository themeRepository) {
         this.themeRepository = themeRepository;

@@ -1,9 +1,8 @@
 package com.yourssu.roomescape.auth;
 
-import com.yourssu.roomescape.constants.CookieConstants;
+import com.yourssu.roomescape.enums.Cookie;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.security.LoginMember;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +19,8 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-        Cookie cookie = new Cookie(CookieConstants.TOKEN_NAME, loginService.login(loginRequest));
+    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(Cookie.TOKEN_NAME, loginService.login(loginRequest));
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
@@ -35,8 +34,8 @@ public class LoginController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie(CookieConstants.TOKEN_NAME, "");
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(Cookie.TOKEN_NAME, "");
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(0);
