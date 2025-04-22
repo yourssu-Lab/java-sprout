@@ -1,5 +1,15 @@
-package com.yourssu.roomescape.constants;
+package com.yourssu.roomescape.enums;
 
-public class CookieConstants {
-    public static final String TOKEN_NAME = "token";
+public enum Cookie {
+    TOKEN_NAME("token");
+
+    private final String value;
+
+    Cookie(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }
