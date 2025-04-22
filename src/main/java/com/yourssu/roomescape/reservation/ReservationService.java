@@ -1,9 +1,8 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.reservation.dto.AdminReservationResponse;
 import com.yourssu.roomescape.reservation.dto.ReservationResponse;
-import com.yourssu.roomescape.reservation.dto.UserReservationResponse;
+import com.yourssu.roomescape.security.LoginMember;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.theme.ThemeRepository;
 import com.yourssu.roomescape.time.Time;
@@ -37,12 +36,7 @@ public class ReservationService {
 
         Reservation reservation = reservationRepository.save(
                 new Reservation(name, member, reservationRequest.getDate(), time, theme));
-        return new ReservationResponse(
-                reservation.getId(),
-                reservation.getName(),
-                reservation.getTheme().getName(),
-                reservation.getDate(),
-                reservation.getTime().getValue());
+        return ReservationResponse.of(reservation);
     }
 
     public void deleteById(Long id) {
@@ -55,14 +49,19 @@ public class ReservationService {
                 .toList();
     }
 
-    public List<AdminReservationResponse> findReservationsByAdmin(Member member) {
+    public List<ReservationResponse> findReservation(@LoginMember Member member) {
         return reservationRepository.findAllByMemberId(member.getId()).stream()
-                .map(it -> new AdminReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
+                .map(it -> new ReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
                 .toList();
     }
-    public List<UserReservationResponse> findReservationsByUser(Member member) {
-        return reservationRepository.findAllByMemberId(member.getId()).stream()
-                .map(it -> new UserReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
-                .toList();
-    }
+//    public List<AdminReservationResponse> findReservationsByAdmin(Member member) {
+//        return reservationRepository.findAllByMemberId(member.getId()).stream()
+//                .map(it -> new AdminReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
+//                .toList();
+//    }
+//    public List<UserReservationResponse> findReservationsByUser(Member member) {
+//        return reservationRepository.findAllByMemberId(member.getId()).stream()
+//                .map(it -> new UserReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
+//                .toList();
+//    }
 }
