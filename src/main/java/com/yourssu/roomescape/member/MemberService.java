@@ -2,12 +2,7 @@ package com.yourssu.roomescape.member;
 
 import com.yourssu.roomescape.utils.TokenUtil;
 import com.yourssu.roomescape.validator.MemberValidator;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 import static com.yourssu.roomescape.exception.ExceptionMessage.NO_EXIST_MEMBER;
 

@@ -1,11 +1,6 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.member.LoginMember;
-import com.yourssu.roomescape.member.MemberFinder;
-import com.yourssu.roomescape.utils.TokenUtil;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
