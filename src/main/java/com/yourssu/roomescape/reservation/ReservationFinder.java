@@ -1,7 +1,5 @@
 package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.theme.Theme;
-import com.yourssu.roomescape.theme.ThemeRepository;
 import org.springframework.stereotype.Component;
 
 import static com.yourssu.roomescape.exception.ExceptionMessage.NO_EXIST_RESERVATION;

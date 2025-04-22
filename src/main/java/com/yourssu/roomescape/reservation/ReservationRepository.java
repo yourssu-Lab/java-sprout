@@ -11,5 +11,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByDateAndThemeId(String date, Long themeId);
     List<Reservation> findByMember(Member member);
-    boolean findByDateAndThemeAndTimeAndMember(String date, Theme theme, Time time, Member member);
+
+    boolean existsByDateAndThemeAndTimeAndMember(String date, Theme theme, Time time, Member member);
 }
