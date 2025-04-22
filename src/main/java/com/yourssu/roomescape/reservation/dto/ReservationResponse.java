@@ -1,11 +1,13 @@
 package com.yourssu.roomescape.reservation.dto;
 
+import com.yourssu.roomescape.reservation.Reservation;
+
 public class ReservationResponse {
-    private Long id;
-    private String name;
-    private String theme;
-    private String date;
-    private String time;
+    private final Long id;
+    private final String name;
+    private final String theme;
+    private final String date;
+    private final String time;
 
     public ReservationResponse(Long id, String name, String theme, String date, String time) {
         this.id = id;
@@ -33,5 +35,15 @@ public class ReservationResponse {
 
     public String getTime() {
         return time;
+    }
+
+    public static ReservationResponse of(Reservation reservation) {
+        return new ReservationResponse(
+            reservation.getId(),
+            reservation.getName(),
+            reservation.getTheme().getName(),
+            reservation.getDate(),
+            reservation.getTime().getValue()
+        );
     }
 }

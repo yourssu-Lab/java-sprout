@@ -42,8 +42,16 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations-mine")
-    public ResponseEntity<List<ReservationResponse>> getReservationList(@LoginMember Member member) {
-        return ResponseEntity.ok().body(reservationService.findReservations(member));
+    public ResponseEntity<List<ReservationResponse>> getAdminReservations(@LoginMember Member member) {
+        return ResponseEntity.ok().body(reservationService.findReservation(member));
     }
-
+//    @GetMapping("/reservations-mine")
+//    public ResponseEntity<List<AdminReservationResponse>> getAdminReservations(@RoleCheck(Role.ADMIN) Member member) {
+//        return ResponseEntity.ok().body(reservationService.findReservationsByAdmin(member));
+//    }
+//
+//    @GetMapping("/reservations-mine")
+//    public ResponseEntity<List<UserReservationResponse>> getUserReservations(@RoleCheck(Role.USER) Member member) {
+//        return ResponseEntity.ok().body(reservationService.findReservationsByUser(member));
+//    }
 }
