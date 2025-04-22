@@ -1,4 +1,4 @@
-package com.yourssu.roomescape.constants;
+package com.yourssu.roomescape.enums;
 
 public enum Role {
     ADMIN("ADMIN"),

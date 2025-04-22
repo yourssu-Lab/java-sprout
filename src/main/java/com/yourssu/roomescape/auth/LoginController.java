@@ -20,7 +20,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-        jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(Cookie.TOKEN_NAME, loginService.login(loginRequest));
+        jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(Cookie.TOKEN_NAME.getValue(), loginService.login(loginRequest));
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
@@ -35,7 +35,7 @@ public class LoginController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(Cookie.TOKEN_NAME, "");
+        jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(Cookie.TOKEN_NAME.getValue(), "");
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(0);
