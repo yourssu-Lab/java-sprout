@@ -55,8 +55,9 @@ VALUES ('10:00'),
        ('18:00'),
        ('20:00');
 
-INSERT INTO reservation (member_id, date, time_id, theme_id)
+INSERT INTO reservation (member_id, date, time_id, theme_id, status)
 VALUES
-    (1, '2024-03-01', 1, 1),
-    (1, '2024-03-01', 2, 2),
-    (1, '2024-03-01', 3, 3);
+    (1, '2024-03-01', 1, 1, 'RESERVED'),
+    (1, '2024-03-01', 2, 2, 'RESERVED'),
+    (1, '2024-03-01', 3, 3, 'RESERVED'),
+    (2, '2024-03-01', 1, 1, 'WAITING');

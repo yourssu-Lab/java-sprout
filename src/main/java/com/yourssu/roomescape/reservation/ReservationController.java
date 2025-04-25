@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/reservations")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -19,23 +20,23 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/reservations-mine")
-    public List<ReservationFindAllResponse> list(@LoginMember Member member) {
-        return reservationService.findAll(member);
+    @GetMapping("/mine")
+    public List<ReservationFindAllResponse> getMyReservations(@LoginMember Member member) {
+        return reservationService.getMyReservations(member);
     }
 
-    @PostMapping("/reservations")
+    @PostMapping
     public ResponseEntity<ReservationSaveResponse> create(@RequestBody ReservationSaveRequest reservationSaveRequest, @LoginMember Member member) {
-        if (reservationSaveRequest.getDate() == null || reservationSaveRequest.getTheme() == null || reservationSaveRequest.getTime() == null) {
+        if (reservationSaveRequest.date() == null || reservationSaveRequest.theme() == null || reservationSaveRequest.time() == null || reservationSaveRequest.status() == null) {
             throw new CustomException(ErrorCode.INVALID_RESERVATION_REQUEST);
         }
 
         ReservationSaveResponse reservation = reservationService.save(reservationSaveRequest, member);
 
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.id())).body(reservation);
     }
 
-    @DeleteMapping("/reservations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         reservationService.deleteById(id);
         return ResponseEntity.noContent().build();

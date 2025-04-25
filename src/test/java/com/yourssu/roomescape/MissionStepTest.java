@@ -4,7 +4,6 @@ import com.yourssu.roomescape.auth.AuthService;
 import com.yourssu.roomescape.auth.LoginRequest;
 import com.yourssu.roomescape.reservation.ReservationFindAllResponse;
 import com.yourssu.roomescape.reservation.ReservationSaveResponse;
-import com.yourssu.roomescape.waiting.WaitingSaveResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
@@ -64,6 +63,7 @@ public class MissionStepTest {
         params.put("date", "2024-03-01");
         params.put("time", "1");
         params.put("theme", "1");
+        params.put("status", "RESERVED");
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(params)
@@ -74,7 +74,7 @@ public class MissionStepTest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(201);
-        assertThat(response.as(ReservationSaveResponse.class).getName()).isEqualTo("어드민");
+        assertThat(response.as(ReservationSaveResponse.class).name()).isEqualTo("어드민");
 
         params.put("name", "브라운");
 
@@ -87,7 +87,7 @@ public class MissionStepTest {
                 .extract();
 
         assertThat(adminResponse.statusCode()).isEqualTo(201);
-        assertThat(adminResponse.as(ReservationSaveResponse.class).getName()).isEqualTo("브라운");
+        assertThat(adminResponse.as(ReservationSaveResponse.class).name()).isEqualTo("브라운");
     }
 
     @Test
@@ -118,7 +118,7 @@ public class MissionStepTest {
 
         List<ReservationFindAllResponse> reservations = RestAssured.given().log().all()
                 .cookie("token", adminToken)
-                .get("/reservations-mine")
+                .get("/reservations/mine")
                 .then().log().all()
                 .statusCode(200)
                 .extract().jsonPath().getList(".", ReservationFindAllResponse.class);
@@ -133,37 +133,38 @@ public class MissionStepTest {
 
         Map<String, String> params = new HashMap<>();
         params.put("date", "2024-03-01");
-        params.put("timeId", "1");
-        params.put("themeId", "1");
+        params.put("time", "1");
+        params.put("theme", "1");
+        params.put("status", "WAITING");
 
         // 예약 대기 생성
-        WaitingSaveResponse waiting = RestAssured.given().log().all()
+        ReservationSaveResponse waiting = RestAssured.given().log().all()
                 .body(params)
                 .cookie("token", brownToken)
                 .contentType(ContentType.JSON)
-                .post("/waitings")
+                .post("/reservations")
                 .then().log().all()
                 .statusCode(201)
-                .extract().as(WaitingSaveResponse.class);
+                .extract().as(ReservationSaveResponse.class);
 
         // 내 예약 목록 조회
         List<ReservationFindAllResponse> myReservations = RestAssured.given().log().all()
                 .body(params)
                 .cookie("token", brownToken)
                 .contentType(ContentType.JSON)
-                .get("/reservations-mine")
+                .get("/reservations/mine")
                 .then().log().all()
                 .statusCode(200)
                 .extract().jsonPath().getList(".", ReservationFindAllResponse.class);
 
         // 예약 대기 상태 확인
         String status = myReservations.stream()
-                .filter(it -> it.reservationId() == waiting.waitingId())
+                .filter(it -> it.reservationId().equals(waiting.id()))
                 .filter(it -> !it.status().equals("예약"))
                 .findFirst()
                 .map(ReservationFindAllResponse::status)
                 .orElse(null);
 
-        assertThat(status).isEqualTo("1번째 예약대기");
+        assertThat(status).isEqualTo("2번째 예약대기");
     }
 }

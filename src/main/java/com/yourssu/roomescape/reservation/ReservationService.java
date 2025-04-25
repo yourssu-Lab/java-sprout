@@ -6,51 +6,55 @@ import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.theme.ThemeDao;
+import com.yourssu.roomescape.theme.ThemeRepository;
 import com.yourssu.roomescape.time.Time;
 import com.yourssu.roomescape.time.TimeDao;
-import com.yourssu.roomescape.waiting.WaitingRepository;
-import com.yourssu.roomescape.waiting.WaitingWithRank;
+import com.yourssu.roomescape.time.TimeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Transactional(readOnly = true)
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final MemberRepository memberRepository;
-    private final WaitingRepository waitingRepository;
-    private final ThemeDao themeDao;
-    private final TimeDao timeDao;
+    private final TimeRepository timeRepository;
+    private final ThemeRepository themeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository, MemberRepository memberRepository, WaitingRepository waitingRepository, ThemeDao themeDao, TimeDao timeDao) {
+    public ReservationService(ReservationRepository reservationRepository, MemberRepository memberRepository, ThemeDao themeDao, TimeDao timeDao, TimeRepository timeRepository, ThemeRepository themeRepository) {
         this.reservationRepository = reservationRepository;
         this.memberRepository = memberRepository;
-        this.waitingRepository = waitingRepository;
-        this.themeDao = themeDao;
-        this.timeDao = timeDao;
+        this.timeRepository = timeRepository;
+        this.themeRepository = themeRepository;
     }
 
+    @Transactional
     public ReservationSaveResponse save(ReservationSaveRequest reservationSaveRequest, Member member) {
 
         Member existingMember;
 
-        if (reservationSaveRequest.getName() != null) {
-            existingMember = memberRepository.findByName(reservationSaveRequest.getName())
+        if (reservationSaveRequest.name() != null) {
+            existingMember = memberRepository.findByName(reservationSaveRequest.name())
                     .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         } else {
             existingMember = member;
         }
 
-        Time time = timeDao.findById(reservationSaveRequest.getTime());
-        Theme theme = themeDao.findById(reservationSaveRequest.getTheme());
+        Time time = timeRepository.findById(reservationSaveRequest.time())
+                .orElseThrow(() -> new CustomException(ErrorCode.TIME_NOT_FOUND));
+        Theme theme = themeRepository.findById(reservationSaveRequest.theme())
+                .orElseThrow(() -> new CustomException(ErrorCode.THEME_NOT_FOUND));
 
         Reservation reservation = new Reservation(
                 existingMember,
-                reservationSaveRequest.getDate(),
+                reservationSaveRequest.date(),
                 time,
-                theme
+                theme,
+                reservationSaveRequest.status()
         );
 
         Reservation newReservation = reservationRepository.save(reservation);
@@ -60,31 +64,34 @@ public class ReservationService {
                 newReservation.getMember().getName(),
                 newReservation.getTheme().getName(),
                 newReservation.getDate(),
-                newReservation.getTime().getValue());
+                newReservation.getTime().getValue(),
+                newReservation.getStatus()
+        );
     }
 
+    @Transactional
     public void deleteById(Long id) {
         reservationRepository.deleteById(id);
     }
 
-    public List<ReservationFindAllResponse> findAll(Member member) {
-        List<Reservation> reservations = reservationRepository.findByMember(member);
-        List<WaitingWithRank> waitingsWithRank = waitingRepository.findWaitingsWithRankByMember(member);
+    public List<ReservationFindAllResponse> getMyReservations(Member member) {
+        List<Reservation> reservedReservations = reservationRepository.findByMemberAndStatus(member, ReservationStatus.RESERVED);
+        List<ReservationWaitingWithRank> waitingsWithRank = reservationRepository.findWaitingsWithRankByMember(member);
 
         return Stream.concat(
-                        reservations.stream().map(reservation -> new ReservationFindAllResponse(
+                        reservedReservations.stream().map(reservation -> new ReservationFindAllResponse(
                                 reservation.getId(),
                                 reservation.getTheme().getName(),
                                 reservation.getDate(),
                                 reservation.getTime().getValue(),
-                                "예약"
+                                reservation.getStatus().getDescription()
                         )),
                         waitingsWithRank.stream().map(waitingWithRank -> new ReservationFindAllResponse(
-                                waitingWithRank.getWaiting().getId(),
-                                waitingWithRank.getWaiting().getTheme().getName(),
-                                waitingWithRank.getWaiting().getDate(),
-                                waitingWithRank.getWaiting().getTime().getValue(),
-                                (waitingWithRank.getRank() + 1) + "번째 예약대기"
+                                waitingWithRank.reservation().getId(),
+                                waitingWithRank.reservation().getTheme().getName(),
+                                waitingWithRank.reservation().getDate(),
+                                waitingWithRank.reservation().getTime().getValue(),
+                                (waitingWithRank.rank() + 1) + "번째 예약대기"
                         ))
                 )
                 .collect(Collectors.toList());
