@@ -1,7 +1,7 @@
 package com.yourssu.roomescape.auth;
 
 import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.member.MemberDao;
+import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.util.CookieUtil;
 import com.yourssu.roomescape.util.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,11 +13,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final MemberDao memberDao;
+    private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public LoginMemberArgumentResolver(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
-        this.memberDao = memberDao;
+    public LoginMemberArgumentResolver(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+        this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -35,7 +35,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         if (token == null || token.isBlank()) return null;
 
         String email = jwtTokenProvider.getEmail(token);
-        Member member = memberDao.findByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
 
         return new LoginMember(member.getId(), member.getName(), member.getEmail(), member.getRole());

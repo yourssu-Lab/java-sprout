@@ -1,7 +1,7 @@
 package com.yourssu.roomescape.config;
 
 import com.yourssu.roomescape.auth.LoginMemberArgumentResolver;
-import com.yourssu.roomescape.member.MemberDao;
+import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.util.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -12,19 +12,19 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final MemberDao memberDao;
+    private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AdminInterceptor adminInterceptor;
 
-    public WebConfig(MemberDao memberDao, JwtTokenProvider jwtTokenProvider, AdminInterceptor adminInterceptor) {
-        this.memberDao = memberDao;
+    public WebConfig(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider, AdminInterceptor adminInterceptor) {
+        this.memberRepository = memberRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.adminInterceptor = adminInterceptor;
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new LoginMemberArgumentResolver(memberDao, jwtTokenProvider));
+        resolvers.add(new LoginMemberArgumentResolver(memberRepository, jwtTokenProvider));
     }
 
     @Override
@@ -33,3 +33,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/admin");
     }
 }
+

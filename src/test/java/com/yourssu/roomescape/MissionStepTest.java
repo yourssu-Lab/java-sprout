@@ -1,19 +1,17 @@
 package com.yourssu.roomescape;
 
-import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.member.MemberDao;
+import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.reservation.ReservationResponse;
 import com.yourssu.roomescape.util.JwtTokenProvider;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,28 +20,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private MemberRepository memberRepository;
+
+    private String createToken(String email, String password) {
+        return memberRepository.findByEmailAndPassword(email, password)
+                .map(jwtTokenProvider::createToken)
+                .orElseThrow(() -> new RuntimeException("해당 테스트 유저가 존재하지 않습니다."));
+    }
+
     @Test
     void 일단계() {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", "admin@email.com");
-        params.put("password", "password");
+        Map<String, String> params = Map.of("email", "admin@email.com", "password", "password");
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        var response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().post("/login")
+                .post("/login")
                 .then().log().all()
                 .statusCode(200)
                 .extract();
 
-        String token = response.headers().get("Set-Cookie").getValue().split(";")[0].split("=")[1];
+        String token = response.header("Set-Cookie").split(";")[0].split("=")[1];
 
         assertThat(token).isNotBlank();
 
-        ExtractableResponse<Response> checkResponse = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
+        var checkResponse = RestAssured.given().log().all()
                 .cookie("token", token)
-                .when().get("/login/check")
+                .get("/login/check")
                 .then().log().all()
                 .statusCode(200)
                 .extract();
@@ -51,33 +57,16 @@ public class MissionStepTest {
         assertThat(checkResponse.body().jsonPath().getString("name")).isEqualTo("어드민");
     }
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private MemberDao memberDao;
-
-    private String createToken(String email, String password) {
-        // 테스트 DB에 있는 회원 조회
-        Member member = memberDao.findByEmailAndPassword(email, password)
-                .orElseThrow(() -> new RuntimeException("테스트 회원이 존재하지 않습니다."));
-
-        return jwtTokenProvider.createToken(member);
-    }
-
     @Test
     void 이단계() {
-        String token = createToken("admin@email.com", "password");  // 일단계에서 토큰을 추출하는 로직을 메서드로 따로 만들어서 활용하세요.
+        String token = createToken("admin@email.com", "password");
 
-        Map<String, String> params = new HashMap<>();
-        params.put("date", "2024-03-01");
-        params.put("time", "1");
-        params.put("theme", "1");
+        Map<String, String> params = Map.of("date", "2024-03-01", "time", "1", "theme", "1");
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(params)
+        var response = RestAssured.given().log().all()
                 .cookie("token", token)
                 .contentType(ContentType.JSON)
+                .body(params)
                 .post("/reservations")
                 .then().log().all()
                 .extract();
@@ -85,18 +74,18 @@ public class MissionStepTest {
         assertThat(response.statusCode()).isEqualTo(201);
         assertThat(response.as(ReservationResponse.class).getName()).isEqualTo("어드민");
 
-        params.put("name", "브라운");
-
-        ExtractableResponse<Response> adminResponse = RestAssured.given().log().all()
-                .body(params)
+        var brownReservation = RestAssured.given().log().all()
                 .cookie("token", token)
                 .contentType(ContentType.JSON)
+                .body(new HashMap<>(params) {{
+                    put("name", "브라운");
+                }})
                 .post("/reservations")
                 .then().log().all()
                 .extract();
 
-        assertThat(adminResponse.statusCode()).isEqualTo(201);
-        assertThat(adminResponse.as(ReservationResponse.class).getName()).isEqualTo("브라운");
+        assertThat(brownReservation.statusCode()).isEqualTo(201);
+        assertThat(brownReservation.as(ReservationResponse.class).getName()).isEqualTo("브라운");
     }
 
     @Test
@@ -118,5 +107,17 @@ public class MissionStepTest {
                 .statusCode(200);
     }
 
+//    @Test
+//    void 오단계() {
+//        String adminToken = createToken("admin@email.com", "password");
+//
+//        List<MyReservationResponse> reservations = RestAssured.given().log().all()
+//                .cookie("token", adminToken)
+//                .get("/reservations-mine")
+//                .then().log().all()
+//                .statusCode(200)
+//                .extract().jsonPath().getList(".", MyReservationResponse.class);
+//
+//        assertThat(reservations).hasSize(3);
+//    }
 }
-
