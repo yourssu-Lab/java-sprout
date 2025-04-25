@@ -9,4 +9,5 @@ public class MemberResponse {
     private final Long id;
     private final String name;
     private final String email;
+
 }

@@ -28,4 +28,5 @@ public class JpaTest {
 
         assertThat(persistTime.getTime_value()).isEqualTo(time.getTime_value());
     }
+
 }

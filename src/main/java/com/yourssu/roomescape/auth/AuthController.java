@@ -47,4 +47,5 @@ public class AuthController {
         response.addCookie(cookie);
         return ResponseEntity.ok().build();
     }
+
 }

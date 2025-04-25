@@ -12,4 +12,5 @@ public class WaitingWithRank {
         this.waiting = waiting;
         this.rank = rank;
     }
+
 }
