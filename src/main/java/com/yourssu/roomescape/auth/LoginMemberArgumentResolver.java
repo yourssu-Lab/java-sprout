@@ -1,5 +1,7 @@
 package com.yourssu.roomescape.auth;
 
+import com.yourssu.roomescape.exception.MemberNotFoundException;
+import com.yourssu.roomescape.exception.UnauthenticatedException;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.util.CookieUtil;
@@ -23,7 +25,8 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(LoginMember.class);
+        return parameter.hasParameterAnnotation(LoginMemberAnnotation.class) &&
+                parameter.getParameterType().equals(com.yourssu.roomescape.auth.LoginMember.class);
     }
 
     @Override
@@ -32,11 +35,14 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
         String token = CookieUtil.extractTokenFromCookies(request.getCookies());
-        if (token == null || token.isBlank()) return null;
+
+        if (token == null || token.isBlank()) {
+            throw new UnauthenticatedException("토큰이 존재하지 않거나 비어 있습니다.");
+        }
 
         String email = jwtTokenProvider.getEmail(token);
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("이메일로 회원을 찾을 수 없습니다: " + email));
 
         return new LoginMember(member.getId(), member.getName(), member.getEmail(), member.getRole());
     }
