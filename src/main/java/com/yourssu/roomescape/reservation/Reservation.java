@@ -25,22 +25,13 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
     private Theme theme;
 
-    public Reservation(Long id, String name, String date, Time time, Theme theme) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-        this.theme = theme;
-    }
+    protected Reservation() {}
 
     public Reservation(String name, String date, Time time, Theme theme) {
         this.name = name;
         this.date = date;
         this.time = time;
         this.theme = theme;
-    }
-
-    public Reservation() {
     }
 
     public Reservation(Member member, String date, Time time, Theme theme) {

@@ -22,8 +22,4 @@ public class ReservationRequest {
     @NotNull(message = "테마 ID는 필수입니다.")
     private final Long theme;
 
-    public ReservationRequest withName(String name) {
-        return new ReservationRequest(name, this.date, this.time, this.theme);
-    }
-
 }
