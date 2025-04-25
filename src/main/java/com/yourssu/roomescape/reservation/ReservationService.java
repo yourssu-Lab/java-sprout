@@ -36,21 +36,17 @@ public class ReservationService {
                 ? memberService.findByName(request.getName())
                 : memberService.findByEmail(loginMember.getEmail());
 
-        ReservationRequest filledRequest = request.withName(member.getName());
+        Time time = timeRepository.findById(request.getTime()).orElseThrow();
+        Theme theme = themeRepository.findById(request.getTheme()).orElseThrow();
 
-        Theme theme = themeRepository.findById(filledRequest.getTheme())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 테마입니다."));
-        Time time = timeRepository.findById(filledRequest.getTime())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간입니다."));
-
-        Reservation reservation = new Reservation(
-                filledRequest.getName(),
-                filledRequest.getDate(),
-                time,
-                theme
-        );
-
-        return ReservationResponse.of(reservationRepository.save(reservation));
+        Reservation reservation;
+        if (request.getName() != null && !request.getName().isBlank()) {
+            reservation = new Reservation(request.getName(), request.getDate(), time, theme);
+        } else {
+            reservation = new Reservation(member, request.getDate(), time, theme);
+        }
+        reservationRepository.save(reservation);
+        return ReservationResponse.of(reservation);
     }
 
     public void deleteById(Long id) {
@@ -66,6 +62,12 @@ public class ReservationService {
                         it.getDate(),
                         it.getTime().getTime_value()
                 ))
+                .toList();
+    }
+
+    public List<MyReservationResponse> findMyReservations(LoginMember loginMember) {
+        return reservationRepository.findByMemberId(loginMember.getId()).stream()
+                .map(MyReservationResponse::of)
                 .toList();
     }
 }

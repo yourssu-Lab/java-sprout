@@ -1,6 +1,7 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.auth.LoginMember;
+import com.yourssu.roomescape.auth.LoginMemberAnnotation;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +24,8 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity create(@Valid @RequestBody ReservationRequest reservationRequest, LoginMember loginMember) {
+    public ResponseEntity create(@Valid @RequestBody ReservationRequest reservationRequest, @LoginMemberAnnotation LoginMember loginMember) {
         ReservationResponse reservation = reservationService.save(reservationRequest, loginMember);
-
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
     }
 
@@ -33,5 +33,10 @@ public class ReservationController {
     public ResponseEntity delete(@PathVariable Long id) {
         reservationService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/reservations-mine")
+    public ResponseEntity<List<MyReservationResponse>> myReservations(@LoginMemberAnnotation LoginMember loginMember) {
+        return ResponseEntity.ok(reservationService.findMyReservations(loginMember));
     }
 }
