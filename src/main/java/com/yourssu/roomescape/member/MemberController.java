@@ -1,5 +1,7 @@
 package com.yourssu.roomescape.member;
 
+import com.yourssu.roomescape.member.dto.MemberRequest;
+import com.yourssu.roomescape.member.dto.MemberResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;

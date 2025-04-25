@@ -1,5 +1,7 @@
 package com.yourssu.roomescape.auth;
 
+import com.yourssu.roomescape.auth.dto.CheckLoginResponse;
+import com.yourssu.roomescape.auth.dto.LoginRequest;
 import com.yourssu.roomescape.jwt.TokenExtractor;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

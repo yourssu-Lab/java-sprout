@@ -1,6 +1,7 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.reservation.dto.ReservationWaitingWithRank;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -8,13 +9,11 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    List<Reservation> findByMember(Member member);
-
     List<Reservation> findByMemberAndStatus(Member member, ReservationStatus status);
 
     List<Reservation> findByDateAndThemeId(String date, Long themeId);
 
-    @Query("SELECT new com.yourssu.roomescape.reservation.ReservationWaitingWithRank(" +
+    @Query("SELECT new com.yourssu.roomescape.reservation.dto.ReservationWaitingWithRank(" +
             "    r, " +
             "    (SELECT COUNT(r2) " +
             "     FROM Reservation r2 " +

@@ -4,6 +4,9 @@ import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.exception.CustomException;
 import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.reservation.dto.ReservationFindAllResponse;
+import com.yourssu.roomescape.reservation.dto.ReservationSaveRequest;
+import com.yourssu.roomescape.reservation.dto.ReservationSaveResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

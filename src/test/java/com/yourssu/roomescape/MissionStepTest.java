@@ -1,9 +1,9 @@
 package com.yourssu.roomescape;
 
 import com.yourssu.roomescape.auth.AuthService;
-import com.yourssu.roomescape.auth.LoginRequest;
-import com.yourssu.roomescape.reservation.ReservationFindAllResponse;
-import com.yourssu.roomescape.reservation.ReservationSaveResponse;
+import com.yourssu.roomescape.auth.dto.LoginRequest;
+import com.yourssu.roomescape.reservation.dto.ReservationFindAllResponse;
+import com.yourssu.roomescape.reservation.dto.ReservationSaveResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;

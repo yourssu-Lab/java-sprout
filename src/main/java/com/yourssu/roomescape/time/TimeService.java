@@ -8,17 +8,17 @@ import java.util.List;
 
 @Service
 public class TimeService {
-    private final TimeDao timeDao;
     private final ReservationRepository reservationRepository;
+    private final TimeRepository timeRepository;
 
-    public TimeService(TimeDao timeDao, ReservationRepository reservationRepository) {
-        this.timeDao = timeDao;
+    public TimeService(ReservationRepository reservationRepository, TimeRepository timeRepository) {
         this.reservationRepository = reservationRepository;
+        this.timeRepository = timeRepository;
     }
 
     public List<AvailableTime> getAvailableTime(String date, Long themeId) {
         List<Reservation> reservations = reservationRepository.findByDateAndThemeId(date, themeId);
-        List<Time> times = timeDao.findAll();
+        List<Time> times = timeRepository.findAll();
 
         return times.stream()
                 .map(time -> new AvailableTime(
@@ -31,14 +31,14 @@ public class TimeService {
     }
 
     public List<Time> findAll() {
-        return timeDao.findAll();
+        return timeRepository.findAll();
     }
 
     public Time save(Time time) {
-        return timeDao.save(time);
+        return timeRepository.save(time);
     }
 
     public void deleteById(Long id) {
-        timeDao.deleteById(id);
+        timeRepository.deleteById(id);
     }
 }

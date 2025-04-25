@@ -4,11 +4,13 @@ import com.yourssu.roomescape.exception.CustomException;
 import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
+import com.yourssu.roomescape.reservation.dto.ReservationFindAllResponse;
+import com.yourssu.roomescape.reservation.dto.ReservationSaveRequest;
+import com.yourssu.roomescape.reservation.dto.ReservationSaveResponse;
+import com.yourssu.roomescape.reservation.dto.ReservationWaitingWithRank;
 import com.yourssu.roomescape.theme.Theme;
-import com.yourssu.roomescape.theme.ThemeDao;
 import com.yourssu.roomescape.theme.ThemeRepository;
 import com.yourssu.roomescape.time.Time;
-import com.yourssu.roomescape.time.TimeDao;
 import com.yourssu.roomescape.time.TimeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ public class ReservationService {
     private final TimeRepository timeRepository;
     private final ThemeRepository themeRepository;
 
-    public ReservationService(ReservationRepository reservationRepository, MemberRepository memberRepository, ThemeDao themeDao, TimeDao timeDao, TimeRepository timeRepository, ThemeRepository themeRepository) {
+    public ReservationService(ReservationRepository reservationRepository, MemberRepository memberRepository, TimeRepository timeRepository, ThemeRepository themeRepository) {
         this.reservationRepository = reservationRepository;
         this.memberRepository = memberRepository;
         this.timeRepository = timeRepository;

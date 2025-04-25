@@ -1,4 +1,4 @@
-package com.yourssu.roomescape.member;
+package com.yourssu.roomescape.member.dto;
 
 public class MemberRequest {
     private String name;
