@@ -1,6 +1,8 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.member.LoginMember;
+import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.member.MemberRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,14 +13,28 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final MemberRepository memberRepository;
 
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(ReservationService reservationService, MemberRepository memberRepository) {
         this.reservationService = reservationService;
+        this.memberRepository = memberRepository;
     }
 
     @GetMapping("/reservations")
     public List<ReservationResponse> list() {
         return reservationService.findAll();
+    }
+
+    @GetMapping("/reservations-mine")
+    public List<MyReservationResponse> myReservations(LoginMember loginMember) {
+        if (loginMember == null) {
+            return List.of(); // 로그인하지 않은 경우 빈 목록 반환
+        }
+
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        return reservationService.findMyReservations(member);
     }
 
     @PostMapping("/reservations")
