@@ -17,13 +17,4 @@ public class MemberService {
         return new MemberResponse(saved.getId(), saved.getName(), saved.getEmail());
     }
 
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberNotFoundException("이메일이 일치하는 회원이 없습니다."));
-    }
-
-    public Member findByName(String name) {
-        return memberRepository.findByName(name)
-                .orElseThrow(() -> new MemberNotFoundException("이름이 일치하는 회원이 없습니다."));
-    }
 }
