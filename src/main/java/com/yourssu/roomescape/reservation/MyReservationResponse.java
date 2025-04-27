@@ -25,7 +25,7 @@ public class MyReservationResponse {
                 reservation.getId(),
                 reservation.getTheme().getName(),
                 reservation.getDate(),
-                reservation.getTime().getTime_value(),
+                reservation.getTime().getTimeValue(),
                 "예약"
         );
     }
@@ -37,7 +37,7 @@ public class MyReservationResponse {
                 waiting.getId(),
                 waiting.getTheme().getName(),
                 waiting.getDate(),
-                waiting.getTime().getTime_value(),
+                waiting.getTime().getTimeValue(),
                 status
         );
     }

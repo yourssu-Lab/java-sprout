@@ -72,7 +72,7 @@ public class ReservationService {
                         it.getName(),
                         it.getTheme().getName(),
                         it.getDate(),
-                        it.getTime().getTime_value()
+                        it.getTime().getTimeValue()
                 ))
                 .toList();
     }

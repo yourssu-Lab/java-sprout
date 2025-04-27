@@ -14,7 +14,7 @@ public class Time {
 
     @Setter
     @Column(name = "time_value", nullable = false)
-    private String time_value;
+    private String timeValue;
 
     @Setter
     @Column(nullable = false)
@@ -23,12 +23,12 @@ public class Time {
     protected Time() {
     }
 
-    public Time(String time_value) {
-        this.time_value = time_value;
+    public Time(String timeValue) {
+        this.timeValue = timeValue;
     }
 
-    public Time(Long id, String time_value) {
+    public Time(Long id, String timeValue) {
         this.id = id;
-        this.time_value = time_value;
+        this.timeValue = timeValue;
     }
 }
