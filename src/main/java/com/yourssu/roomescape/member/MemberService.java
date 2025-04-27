@@ -1,41 +1,62 @@
 package com.yourssu.roomescape.member;
 
 import com.yourssu.roomescape.JwtTokenProvider;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
-        this.memberDao = memberDao;
+    public MemberService(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest memberRequest) {
-        Member member = memberDao.save(new Member(memberRequest.getName(), memberRequest.getEmail(), memberRequest.getPassword(), "USER"));
+        Member member = memberRepository.save(new Member(
+                memberRequest.getName(),
+                memberRequest.getEmail(),
+                memberRequest.getPassword(),
+                "USER"
+        ));
         return new MemberResponse(member.getId(), member.getName(), member.getEmail());
     }
 
     public TokenDto login(LoginRequest loginRequest) {
-        Member member = memberDao.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword()); // TODO: 유저 찾기 여기 유저 없으면 예외 처리 어떻게 할지 고민해보기
-        String token = jwtTokenProvider.createToken(member.getEmail());
-        return new TokenDto(token);
+        try {
+            // 1. 먼저 이메일로만 사용자를 찾고
+            Member member = memberRepository.findByEmail(loginRequest.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // 2. 비밀번호 수동 검증
+            if (!member.getPassword().equals(loginRequest.getPassword())) {
+                throw new RuntimeException("Invalid password");
+            }
+
+            // 3. 토큰 생성 및 반환
+            String token = jwtTokenProvider.createToken(member.getEmail());
+            return new TokenDto(token);
+        } catch (Exception e) {
+            e.printStackTrace(); // 디버깅용
+            throw new RuntimeException("Invalid credentials", e);
+        }
     }
 
     public String loginCheck(String token) {
 
         String email = jwtTokenProvider.getPayload(token);
-        Member member = memberDao.findByEmail(email);
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Invalid credentials"));
         return member.getName();
     }
 
     public Member findByEmail(String email) {
-        return memberDao.findByEmail(email);
+        return memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Invalid credentials"));
     }
 
     public Member findByName(String name) {
-        return memberDao.findByName(name);
+        return memberRepository.findByName(name).orElseThrow(() -> new RuntimeException("Invalid credentials"));
     }
 }
