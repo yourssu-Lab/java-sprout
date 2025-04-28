@@ -1,12 +1,15 @@
 package com.yourssu.roomescape.time;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Entity
 @Table(name = "times")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Time {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,9 +22,6 @@ public class Time {
     @Setter
     @Column(nullable = false)
     private boolean deleted = false;
-
-    protected Time() {
-    }
 
     public Time(String timeValue) {
         this.timeValue = timeValue;

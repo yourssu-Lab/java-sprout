@@ -1,11 +1,14 @@
 package com.yourssu.roomescape.theme;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "theme")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Theme {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +19,6 @@ public class Theme {
 
     @Column(nullable = false)
     private boolean deleted = false;
-
-    protected Theme() {}
 
     public Theme(String name, String description) {
         this.name = name;

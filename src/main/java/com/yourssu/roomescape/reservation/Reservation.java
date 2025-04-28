@@ -4,10 +4,13 @@ import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
 import com.yourssu.roomescape.member.Member;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +27,6 @@ public class Reservation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Theme theme;
-
-    protected Reservation() {}
 
     public Reservation(String name, String date, Time time, Theme theme) {
         this.name = name;
