@@ -12,8 +12,11 @@ import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.theme.ThemeRepository;
 import com.yourssu.roomescape.time.Time;
 import com.yourssu.roomescape.time.TimeRepository;
-import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -77,6 +80,7 @@ public class ReservationService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<MyReservationResponse> findMyReservations(LoginMember loginMember) {
         Long memberId = loginMember.getId();
 
@@ -88,9 +92,12 @@ public class ReservationService {
                 .map(MyReservationResponse::fromWaiting)
                 .toList();
 
-        return Stream.concat(reservations.stream(), waitings.stream()).toList();
+        List<MyReservationResponse> result = new ArrayList<>(reservations);
+        result.addAll(waitings);
+        return result;
     }
 
+    @Transactional
     public WaitingResponse createWaiting(WaitingRequest request, LoginMember loginMember) {
         Member member = memberRepository.findByEmail(loginMember.getEmail())
                 .orElseThrow(() -> new MemberNotFoundException("이메일이 일치하는 회원이 없습니다."));
@@ -101,7 +108,13 @@ public class ReservationService {
         validateNotDuplicateWaiting(member.getId(), request.getDate(), time, theme);
 
         Waiting waiting = new Waiting(member, request.getDate(), time, theme);
-        return WaitingResponse.of(waitingRepository.save(waiting));
+        Waiting savedWaiting = waitingRepository.save(waiting);
+
+        int rank = waitingRepository.countByThemeAndDateAndTimeAndIdLessThan(
+                theme, request.getDate(), time, savedWaiting.getId()
+        ) + 1;
+
+        return WaitingResponse.of(savedWaiting, rank);
     }
 
     private void validateNotDuplicateWaiting(Long memberId, String date, Time time, Theme theme) {

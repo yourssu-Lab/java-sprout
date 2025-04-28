@@ -4,6 +4,7 @@ import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -26,5 +27,20 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
                 WHERE w.member.id = :memberId
             """)
 
-    List<WaitingWithRank> findWithRankByMemberId(Long memberId);
+    List<WaitingWithRank> findWithRankByMemberId(@Param("memberId")Long memberId);
+
+    @Query("""
+            SELECT COUNT(w)
+            FROM Waiting w
+            WHERE w.theme = :theme
+              AND w.date = :date
+              AND w.time = :time
+              AND w.id < :id
+            """)
+    int countByThemeAndDateAndTimeAndIdLessThan(
+            @Param("theme") Theme theme,
+            @Param("date") String date,
+            @Param("time") Time time,
+            @Param("id") Long id
+    );
 }

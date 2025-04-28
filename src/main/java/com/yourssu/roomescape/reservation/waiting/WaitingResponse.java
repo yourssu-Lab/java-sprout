@@ -1,17 +1,17 @@
 package com.yourssu.roomescape.reservation.waiting;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class WaitingResponse {
 
     private final Long id;
+    private final int waitingNumber;
 
-    public WaitingResponse(Long id) {
-        this.id = id;
-    }
-
-    public static WaitingResponse of(Waiting waiting) {
-        return new WaitingResponse(waiting.getId());
+    public static WaitingResponse of(Waiting waiting, int waitingNumber) {
+        return new WaitingResponse(waiting.getId(), waitingNumber);
     }
 }
+
