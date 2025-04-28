@@ -7,6 +7,7 @@ import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.reservation.dto.ReservationFindAllResponse;
 import com.yourssu.roomescape.reservation.dto.ReservationSaveRequest;
 import com.yourssu.roomescape.reservation.dto.ReservationSaveResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +30,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationSaveResponse> create(@RequestBody ReservationSaveRequest reservationSaveRequest, @LoginMember Member member) {
-        if (reservationSaveRequest.date() == null || reservationSaveRequest.theme() == null || reservationSaveRequest.time() == null || reservationSaveRequest.status() == null) {
-            throw new CustomException(ErrorCode.INVALID_RESERVATION_REQUEST);
-        }
+    public ResponseEntity<ReservationSaveResponse> create(@RequestBody @Valid ReservationSaveRequest reservationSaveRequest, @LoginMember Member member) {
 
         ReservationSaveResponse reservation = reservationService.save(reservationSaveRequest, member);
 
