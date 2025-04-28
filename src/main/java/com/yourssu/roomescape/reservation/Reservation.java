@@ -45,7 +45,7 @@ public class Reservation {
         this.status = status;
     }
 
-    public Reservation() {
+    protected Reservation() {
 
     }
 

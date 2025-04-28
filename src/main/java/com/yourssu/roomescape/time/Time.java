@@ -25,7 +25,7 @@ public class Time {
         this.value = value;
     }
 
-    public Time() {
+    protected Time() {
 
     }
 

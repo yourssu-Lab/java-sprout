@@ -23,7 +23,7 @@ public class Member {
         this.role = role;
     }
 
-    public Member() {
+    protected Member() {
 
     }
 
