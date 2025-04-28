@@ -121,14 +121,15 @@ function checkDateAndThemeAndTime() {
 
 function onReservationButtonClick() {
   const selectedDate = document.getElementById("datepicker").value;
-  const selectedThemeId = document.querySelector('.theme-slot.active')?.getAttribute('data-theme-id');
-  const selectedTimeId = document.querySelector('.time-slot.active')?.getAttribute('data-time-id');
+  const selectedThemeId = Number(document.querySelector('.theme-slot.active')?.getAttribute('data-theme-id'));
+  const selectedTimeId = Number(document.querySelector('.time-slot.active')?.getAttribute('data-time-id'));
 
   if (selectedDate && selectedThemeId && selectedTimeId) {
     const reservationData = {
       date: selectedDate,
       theme: selectedThemeId,
-      time: selectedTimeId
+      time: selectedTimeId,
+      status: "RESERVED"
     };
 
     fetch('/reservations', {
@@ -164,10 +165,11 @@ function onWaitButtonClick() {
     const reservationData = {
       date: selectedDate,
       theme: selectedThemeId,
-      time: selectedTimeId
+      time: selectedTimeId,
+      status: "WAITING"
     };
 
-    fetch('/waitings', {
+    fetch('/reservations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -179,7 +181,7 @@ function onWaitButtonClick() {
           return response.json();
         })
         .then(data => {
-          alert("대기 순서" + data.waitingNumber + "번째");
+          alert("대기 순서 " + (data.waitingRank + 1) + "번째");
           window.location.href = "/";
         })
         .catch(error => {

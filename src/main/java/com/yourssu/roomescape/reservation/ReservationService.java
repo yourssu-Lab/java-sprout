@@ -61,13 +61,21 @@ public class ReservationService {
 
         Reservation newReservation = reservationRepository.save(reservation);
 
+        Long waitingRank = reservationRepository.findWaitingRank(
+                newReservation.getTheme(),
+                newReservation.getDate(),
+                newReservation.getTime(),
+                newReservation.getId()
+        );
+
         return new ReservationSaveResponse(
                 newReservation.getId(),
                 newReservation.getMember().getName(),
                 newReservation.getTheme().getName(),
                 newReservation.getDate(),
                 newReservation.getTime().getValue(),
-                newReservation.getStatus()
+                newReservation.getStatus(),
+                waitingRank
         );
     }
 

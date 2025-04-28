@@ -1,4 +1,4 @@
-const RESERVATION_API_ENDPOINT = '/reservations-mine';
+const RESERVATION_API_ENDPOINT = '/reservations/mine';
 
 document.addEventListener('DOMContentLoaded', () => {
   requestRead(RESERVATION_API_ENDPOINT)

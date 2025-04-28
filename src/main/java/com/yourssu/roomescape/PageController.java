@@ -30,7 +30,7 @@ public class PageController {
         return "reservation";
     }
 
-    @GetMapping("/reservation/mine")
+    @GetMapping("/reservation-mine")
     public String myReservation() {
         return "reservation-mine";
     }
