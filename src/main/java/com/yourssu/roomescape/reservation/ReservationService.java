@@ -88,7 +88,6 @@ public class ReservationService {
     }
 
     public List<MyReservationResponse> findMyReservations(Member member) {
-        // 예약 목록 가져오기
         List<MyReservationResponse> reservations = reservationRepository.findByMember(member).stream()
                 .map(it -> new MyReservationResponse(
                         it.getId(),
@@ -99,10 +98,8 @@ public class ReservationService {
                 ))
                 .collect(Collectors.toList());
 
-        // 대기 목록 가져오기 (순위 포함)
         List<WaitingWithRank> waitings = waitingRepository.findWaitingsWithRankByMemberId(member.getId());
 
-        // 대기 목록을 MyReservationResponse로 변환하여 추가
         List<MyReservationResponse> waitingResponses = waitings.stream()
                 .map(wr -> new MyReservationResponse(
                         wr.getWaiting().getId(),
@@ -113,9 +110,15 @@ public class ReservationService {
                 ))
                 .collect(Collectors.toList());
 
-        // 예약과 대기 목록 합치기
         reservations.addAll(waitingResponses);
 
         return reservations;
+    }
+
+    public List<MyReservationResponse> findMyReservationsByMemberId(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        return findMyReservations(member);
     }
 }

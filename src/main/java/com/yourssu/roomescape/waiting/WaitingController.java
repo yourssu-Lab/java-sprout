@@ -11,11 +11,9 @@ import java.net.URI;
 @RestController
 public class WaitingController {
     private final WaitingService waitingService;
-    private final MemberRepository memberRepository;
 
-    public WaitingController(WaitingService waitingService, MemberRepository memberRepository) {
+    public WaitingController(WaitingService waitingService) {
         this.waitingService = waitingService;
-        this.memberRepository = memberRepository;
     }
 
     @PostMapping("/waitings")
@@ -27,14 +25,11 @@ public class WaitingController {
             return ResponseEntity.badRequest().build();
         }
 
-        Member member = memberRepository.findById(loginMember.getId())
-                .orElseThrow(() -> new RuntimeException("Member not found"));
-
-        WaitingResponse waiting = waitingService.addWaiting(
+        WaitingResponse waiting = waitingService.addWaitingByMemberId(
                 request.getDate(),
                 request.getTheme(),
                 request.getTime(),
-                member
+                loginMember.getId()
         );
 
         return ResponseEntity.created(URI.create("/waitings/" + waiting.getId()))

@@ -77,4 +77,13 @@ public class WaitingService {
     public void deleteWaiting(Long id) {
         waitingRepository.deleteById(id);
     }
+
+    @Transactional
+    public WaitingResponse addWaitingByMemberId(String date, Long themeId, Long timeId, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        return addWaiting(date, themeId, timeId, member);
+    }
+
 }

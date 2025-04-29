@@ -14,11 +14,9 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
-    private final MemberRepository memberRepository;
 
-    public ReservationController(ReservationService reservationService, MemberRepository memberRepository) {
+    public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
-        this.memberRepository = memberRepository;
     }
 
     @GetMapping("/reservations")
@@ -31,11 +29,7 @@ public class ReservationController {
         if (loginMember == null) {
             return List.of(); // 로그인하지 않은 경우 빈 목록 반환
         }
-
-        Member member = memberRepository.findById(loginMember.getId())
-                .orElseThrow(() -> new RuntimeException("Member not found"));
-
-        return reservationService.findMyReservations(member);
+        return reservationService.findMyReservationsByMemberId(loginMember.getId());
     }
 
     @PostMapping("/reservations")
