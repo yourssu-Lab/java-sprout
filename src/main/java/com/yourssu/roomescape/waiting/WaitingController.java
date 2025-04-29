@@ -1,13 +1,12 @@
 package com.yourssu.roomescape.waiting;
 
-import com.yourssu.roomescape.member.LoginMember;
+import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Map;
 
 @RestController
 public class WaitingController {

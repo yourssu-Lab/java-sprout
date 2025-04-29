@@ -1,3 +1,3 @@
-package com.yourssu.roomescape.member;
+package com.yourssu.roomescape.auth;
 
 public record LoginCheckResponse(String name) {}

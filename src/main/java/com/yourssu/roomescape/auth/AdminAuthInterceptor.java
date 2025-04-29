@@ -1,13 +1,14 @@
-package com.yourssu.roomescape.member;
+package com.yourssu.roomescape.auth;
 
-import com.yourssu.roomescape.AppConstants;
-import com.yourssu.roomescape.JwtTokenProvider;
+import com.yourssu.roomescape.common.AppConstants;
+import com.yourssu.roomescape.common.security.JwtTokenProvider;
+import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.member.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 @Component
 public class AdminAuthInterceptor implements HandlerInterceptor {

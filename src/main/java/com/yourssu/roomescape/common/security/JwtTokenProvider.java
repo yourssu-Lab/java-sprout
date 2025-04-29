@@ -1,6 +1,5 @@
-package com.yourssu.roomescape;
+package com.yourssu.roomescape.common.security;
 
-import com.yourssu.roomescape.member.LoginRequest;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;

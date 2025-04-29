@@ -1,7 +1,9 @@
-package com.yourssu.roomescape.member;
+package com.yourssu.roomescape.auth;
 
-import com.yourssu.roomescape.AppConstants;
-import com.yourssu.roomescape.JwtTokenProvider;
+import com.yourssu.roomescape.common.AppConstants;
+import com.yourssu.roomescape.common.security.JwtTokenProvider;
+import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.member.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;

@@ -1,4 +1,4 @@
-package com.yourssu.roomescape;
+package com.yourssu.roomescape.common.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

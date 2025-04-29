@@ -1,6 +1,6 @@
 package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.member.LoginMember;
+import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import org.springframework.http.ResponseEntity;

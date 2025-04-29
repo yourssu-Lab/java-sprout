@@ -1,7 +1,7 @@
-package com.yourssu.roomescape;
+package com.yourssu.roomescape.common.config;
 
-import com.yourssu.roomescape.member.AdminAuthInterceptor;
-import com.yourssu.roomescape.member.LoginMemberArgumentResolver;
+import com.yourssu.roomescape.auth.AdminAuthInterceptor;
+import com.yourssu.roomescape.auth.LoginMemberArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

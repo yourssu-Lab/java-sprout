@@ -1,6 +1,8 @@
 package com.yourssu.roomescape.member;
 
-import com.yourssu.roomescape.JwtTokenProvider;
+import com.yourssu.roomescape.auth.LoginRequest;
+import com.yourssu.roomescape.auth.TokenDto;
+import com.yourssu.roomescape.common.security.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.yourssu.roomescape.member;
+package com.yourssu.roomescape.auth;
 
 public class LoginMember {
     private Long id;

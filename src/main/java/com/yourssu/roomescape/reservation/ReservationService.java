@@ -1,6 +1,6 @@
 package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.member.LoginMember;
+import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.theme.Theme;
@@ -8,7 +8,6 @@ import com.yourssu.roomescape.theme.ThemeRepository;
 import com.yourssu.roomescape.time.Time;
 import com.yourssu.roomescape.time.TimeRepository;
 import com.yourssu.roomescape.waiting.WaitingRepository;
-import com.yourssu.roomescape.waiting.WaitingService;
 import com.yourssu.roomescape.waiting.WaitingWithRank;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
