@@ -36,31 +36,6 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponse save(ReservationRequest reservationRequest) {
-        Time time = timeRepository.findById(reservationRequest.getTime())
-                .orElseThrow(() -> new RuntimeException("Time not found"));
-        Theme theme = themeRepository.findById(reservationRequest.getTheme())
-                .orElseThrow(() -> new RuntimeException("Theme not found"));
-
-        Reservation reservation = new Reservation(
-                reservationRequest.getName(),
-                reservationRequest.getDate(),
-                time,
-                theme
-        );
-
-        Reservation savedReservation = reservationRepository.save(reservation);
-
-        return new ReservationResponse(
-                savedReservation.getId(),
-                reservationRequest.getName(),
-                theme.getName(),
-                savedReservation.getDate(),
-                time.getValue()
-        );
-    }
-
-    @Transactional
     public ReservationResponse save(ReservationRequest reservationRequest, LoginMember loginMember) {
         String name = reservationRequest.getName() != null ?
                 reservationRequest.getName() : loginMember.getName();
