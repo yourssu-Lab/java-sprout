@@ -56,10 +56,10 @@ VALUES ('10:00', FALSE),
 
 -- reservation 초기 데이터
 -- 어드민(회원 ID 1)의 예약 3건 (오단계 테스트용)
-INSERT INTO reservation (name, date, time_id, theme_id, member_id)
-VALUES ('어드민', '2024-03-01', 1, 1, 1),
-       ('어드민', '2024-03-01', 2, 2, 1),
-       ('어드민', '2024-03-01', 3, 3, 1);
+INSERT INTO reservation (date, time_id, theme_id, member_id)
+VALUES ('2024-03-01', 1, 1, 1),
+       ('2024-03-01', 2, 2, 1),
+       ('2024-03-01', 3, 3, 1);
 
 -- INSERT INTO reservation (name, date, time_id, theme_id)
 -- VALUES ('어드민', '2024-03-01', 1, 1),

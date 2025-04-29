@@ -16,7 +16,6 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
     private String date;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,16 +27,8 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
     private Theme theme;
 
-    public Reservation(String name, String date, Time time, Theme theme) {
-        this.name = name;
-        this.date = date;
-        this.time = time;
-        this.theme = theme;
-    }
-
     public Reservation(Member member, String date, Time time, Theme theme) {
         this.member = member;
-        this.name = member.getName();
         this.date = date;
         this.time = time;
         this.theme = theme;

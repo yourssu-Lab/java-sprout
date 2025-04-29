@@ -50,17 +50,12 @@ public class ReservationService {
                 : memberRepository.findByEmail(loginMember.getEmail())
                 .orElseThrow(() -> new MemberNotFoundException("이메일이 일치하는 회원이 없습니다."));
 
-
         Time time = timeRepository.findById(request.getTime()).orElseThrow();
         Theme theme = themeRepository.findById(request.getTheme()).orElseThrow();
 
-        Reservation reservation;
-        if (request.getName() != null && !request.getName().isBlank()) {
-            reservation = new Reservation(request.getName(), request.getDate(), time, theme);
-        } else {
-            reservation = new Reservation(member, request.getDate(), time, theme);
-        }
+        Reservation reservation = new Reservation(member, request.getDate(), time, theme);
         reservationRepository.save(reservation);
+
         return ReservationResponse.of(reservation);
     }
 
@@ -72,7 +67,7 @@ public class ReservationService {
         return reservationRepository.findAll().stream()
                 .map(it -> new ReservationResponse(
                         it.getId(),
-                        it.getName(),
+                        it.getMember().getName(),
                         it.getTheme().getName(),
                         it.getDate(),
                         it.getTime().getTimeValue()
