@@ -4,6 +4,7 @@ import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -38,17 +39,11 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity create(@RequestBody ReservationRequest reservationRequest, LoginMember loginMember) {
-        if (reservationRequest.getDate() == null
-                || reservationRequest.getTheme() == null
-                || reservationRequest.getTime() == null) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity create(@Validated @RequestBody ReservationRequest reservationRequest, LoginMember loginMember) {
         if (reservationRequest.getName() == null && loginMember == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        // 비즈니스 로직을 서비스 계층에 위임
         ReservationResponse reservation = reservationService.save(reservationRequest, loginMember);
 
         return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
