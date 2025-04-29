@@ -1,6 +1,7 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.auth.LoginMember;
+import com.yourssu.roomescape.common.exception.ResourceNotFoundException;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.theme.Theme;
@@ -41,9 +42,9 @@ public class ReservationService {
                 reservationRequest.getName() : loginMember.getName();
 
         Time time = timeRepository.findById(reservationRequest.getTime())
-                .orElseThrow(() -> new RuntimeException("Time not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Time not found"));
         Theme theme = themeRepository.findById(reservationRequest.getTheme())
-                .orElseThrow(() -> new RuntimeException("Theme not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Theme not found"));
 
         Member member = null;
         if (loginMember != null) {
@@ -96,7 +97,7 @@ public class ReservationService {
                         it.getTime().getValue(),
                         "예약"
                 ))
-                .collect(Collectors.toList());
+                .toList();
 
         List<WaitingWithRank> waitings = waitingRepository.findWaitingsWithRankByMemberId(member.getId());
 
@@ -108,7 +109,7 @@ public class ReservationService {
                         wr.getWaiting().getTime().getValue(),
                         wr.getRank() + "번째 예약대기"
                 ))
-                .collect(Collectors.toList());
+                .toList();
 
         reservations.addAll(waitingResponses);
 
@@ -117,7 +118,7 @@ public class ReservationService {
 
     public List<MyReservationResponse> findMyReservationsByMemberId(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found"));
 
         return findMyReservations(member);
     }

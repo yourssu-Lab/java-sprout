@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.waiting;
 
+import com.yourssu.roomescape.common.exception.ResourceNotFoundException;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.reservation.ReservationRepository;
@@ -51,9 +52,9 @@ public class WaitingService {
         }
 
         Time time = timeRepository.findById(timeId)
-                .orElseThrow(() -> new RuntimeException("Time not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Time not found"));
         Theme theme = themeRepository.findById(themeId)
-                .orElseThrow(() -> new RuntimeException("Theme not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Theme not found"));
 
         Waiting waiting = new Waiting(date, time, theme, member);
         Waiting savedWaiting = waitingRepository.save(waiting);
@@ -81,7 +82,7 @@ public class WaitingService {
     @Transactional
     public WaitingResponse addWaitingByMemberId(String date, Long themeId, Long timeId, Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Member not found"));
 
         return addWaiting(date, themeId, timeId, member);
     }

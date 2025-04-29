@@ -2,6 +2,8 @@ package com.yourssu.roomescape.member;
 
 import com.yourssu.roomescape.auth.LoginRequest;
 import com.yourssu.roomescape.auth.TokenDto;
+import com.yourssu.roomescape.common.exception.ResourceNotFoundException;
+import com.yourssu.roomescape.common.exception.UnauthorizedException;
 import com.yourssu.roomescape.common.security.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,7 @@ public class MemberService {
         try {
             // 1. 먼저 이메일로만 사용자를 찾고
             Member member = memberRepository.findByEmail(loginRequest.getEmail())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
             // 2. 비밀번호 수동 검증
             if (!member.getPassword().equals(loginRequest.getPassword())) {
@@ -50,15 +52,15 @@ public class MemberService {
     public String loginCheck(String token) {
 
         String email = jwtTokenProvider.getPayload(token);
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Invalid credentials"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
         return member.getName();
     }
 
     public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Invalid credentials"));
+        return memberRepository.findByEmail(email).orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
     }
 
     public Member findByName(String name) {
-        return memberRepository.findByName(name).orElseThrow(() -> new RuntimeException("Invalid credentials"));
+        return memberRepository.findByName(name).orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
     }
 }
