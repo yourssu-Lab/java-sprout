@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 public class ReservationService {
@@ -44,16 +43,16 @@ public class ReservationService {
     }
 
     public ReservationResponse save(ReservationRequest request, LoginMember loginMember) {
-        Member member = (request.getName() != null && !request.getName().isBlank())
-                ? memberRepository.findByName(request.getName())
+        Member member = (request.name() != null && !request.name().isBlank())
+                ? memberRepository.findByName(request.name())
                 .orElseThrow(() -> new MemberNotFoundException("이름이 일치하는 회원이 없습니다."))
-                : memberRepository.findByEmail(loginMember.getEmail())
+                : memberRepository.findByEmail(loginMember.email())
                 .orElseThrow(() -> new MemberNotFoundException("이메일이 일치하는 회원이 없습니다."));
 
-        Time time = timeRepository.findById(request.getTime()).orElseThrow();
-        Theme theme = themeRepository.findById(request.getTheme()).orElseThrow();
+        Time time = timeRepository.findById(request.time()).orElseThrow();
+        Theme theme = themeRepository.findById(request.theme()).orElseThrow();
 
-        Reservation reservation = new Reservation(member, request.getDate(), time, theme);
+        Reservation reservation = new Reservation(member, request.date(), time, theme);
         reservationRepository.save(reservation);
 
         return ReservationResponse.of(reservation);
@@ -77,7 +76,7 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public List<MyReservationResponse> findMyReservations(LoginMember loginMember) {
-        Long memberId = loginMember.getId();
+        Long memberId = loginMember.id();
 
         List<MyReservationResponse> reservations = reservationRepository.findByMemberId(memberId).stream()
                 .map(MyReservationResponse::of)
@@ -94,19 +93,19 @@ public class ReservationService {
 
     @Transactional
     public WaitingResponse createWaiting(WaitingRequest request, LoginMember loginMember) {
-        Member member = memberRepository.findByEmail(loginMember.getEmail())
+        Member member = memberRepository.findByEmail(loginMember.email())
                 .orElseThrow(() -> new MemberNotFoundException("이메일이 일치하는 회원이 없습니다."));
 
-        Time time = timeRepository.findById(request.getTime()).orElseThrow();
-        Theme theme = themeRepository.findById(request.getTheme()).orElseThrow();
+        Time time = timeRepository.findById(request.time()).orElseThrow();
+        Theme theme = themeRepository.findById(request.theme()).orElseThrow();
 
-        validateNotDuplicateWaiting(member.getId(), request.getDate(), time, theme);
+        validateNotDuplicateWaiting(member.getId(), request.date(), time, theme);
 
-        Waiting waiting = new Waiting(member, request.getDate(), time, theme);
+        Waiting waiting = new Waiting(member, request.date(), time, theme);
         Waiting savedWaiting = waitingRepository.save(waiting);
 
         int rank = waitingRepository.countByThemeAndDateAndTimeAndIdLessThan(
-                theme, request.getDate(), time, savedWaiting.getId()
+                theme, request.date(), time, savedWaiting.getId()
         ) + 1;
 
         return WaitingResponse.of(savedWaiting, rank);

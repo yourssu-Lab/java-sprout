@@ -1,19 +1,17 @@
-// WaitingRequest.java
 package com.yourssu.roomescape.reservation.waiting;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
 
-@Getter
-public class WaitingRequest {
+public record WaitingRequest(
 
-    @NotBlank
-    private String date;
+        @NotBlank
+        String date,
 
-    @NotNull
-    private Long time;
+        @NotNull
+        Long time,
 
-    @NotNull
-    private Long theme;
+        @NotNull
+        Long theme
+) {
 }

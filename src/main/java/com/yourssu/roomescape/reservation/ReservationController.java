@@ -28,7 +28,7 @@ public class ReservationController {
     @PostMapping("/reservations")
     public ResponseEntity create(@Valid @RequestBody ReservationRequest reservationRequest, @LoginMemberAnnotation LoginMember loginMember) {
         ReservationResponse reservation = reservationService.save(reservationRequest, loginMember);
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.id())).body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
@@ -45,6 +45,6 @@ public class ReservationController {
     @PostMapping("/waitings")
     public ResponseEntity<WaitingResponse> createWaiting(@Valid @RequestBody WaitingRequest request, @LoginMemberAnnotation LoginMember loginMember) {
         WaitingResponse waitingResponse = reservationService.createWaiting(request, loginMember);
-        return ResponseEntity.created(URI.create("/waitings/" + waitingResponse.getId())).body(waitingResponse);
+        return ResponseEntity.created(URI.create("/waitings/" + waitingResponse.id())).body(waitingResponse);
     }
 }

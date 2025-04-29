@@ -18,7 +18,7 @@ public class AuthService {
     }
 
     public AuthResponse login(AuthRequest request) {
-        Member member = memberRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
+        Member member = memberRepository.findByEmailAndPassword(request.email(), request.password())
                 .orElseThrow(() -> new MemberNotFoundException("이메일 또는 비밀번호가 틀렸습니다."));
         String token = jwtTokenProvider.createToken(member);
         return new AuthResponse(token);

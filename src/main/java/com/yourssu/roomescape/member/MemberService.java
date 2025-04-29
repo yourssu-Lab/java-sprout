@@ -12,7 +12,7 @@ public class MemberService {
     }
 
     public MemberResponse createMember(MemberRequest request) {
-        Member member = new Member(request.getName(), request.getEmail(), request.getPassword(), "USER");
+        Member member = new Member(request.name(), request.email(), request.password(), "USER");
         Member saved = memberRepository.save(member);
         return new MemberResponse(saved.getId(), saved.getName(), saved.getEmail());
     }

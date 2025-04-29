@@ -21,7 +21,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request, HttpServletResponse response) {
         AuthResponse authResponse = authService.login(request);
 
-        Cookie cookie = new Cookie(CookieUtil.TOKEN, authResponse.getToken());
+        Cookie cookie = new Cookie(CookieUtil.TOKEN, authResponse.token());
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
