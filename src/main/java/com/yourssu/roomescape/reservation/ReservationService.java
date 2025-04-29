@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -53,7 +52,6 @@ public class ReservationService {
         }
 
         Reservation reservation = new Reservation(
-                name,
                 reservationRequest.getDate(),
                 time,
                 theme,
