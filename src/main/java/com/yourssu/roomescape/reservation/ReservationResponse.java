@@ -12,11 +12,6 @@ public class ReservationResponse {
     private String date;
     private String time;
 
-    private ThemeRepository themeRepository;
-    private TimeRepository timeRepository;
-    private ReservationResponse reservationRepository;
-
-
     public ReservationResponse(Long id, String name, String theme, String date, String time) {
         this.id = id;
         this.name = name;
