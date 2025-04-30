@@ -13,17 +13,21 @@ public class Reservation {
     @Column
     private String date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "time_id")
     private Time time;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theme_id")
     private Theme theme;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @Column(nullable = false)
+    private String name;  // name 필드 추가
+
 
     public Reservation(Long id, String date, Time time, Theme theme) {
         this.id = id;
@@ -37,6 +41,10 @@ public class Reservation {
         this.time = time;
         this.theme = theme;
         this.member = member;
+
+        if (member != null) {
+            this.name = member.getName();
+        }
     }
 
     public Reservation() {

@@ -1,6 +1,5 @@
 package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.common.exception.ResourceNotFoundException;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -36,23 +36,24 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponse save(ReservationRequest reservationRequest, LoginMember loginMember) {
-        String name = reservationRequest.getName() != null ?
-                reservationRequest.getName() : loginMember.getName();
-
-        Time time = timeRepository.findById(reservationRequest.getTime())
-                .orElseThrow(() -> new ResourceNotFoundException("Time not found"));
-        Theme theme = themeRepository.findById(reservationRequest.getTheme())
-                .orElseThrow(() -> new ResourceNotFoundException("Theme not found"));
-
-        Member member = null;
-        if (loginMember != null) {
-            member = memberRepository.findById(loginMember.getId())
-                    .orElse(null);
+    public ReservationResponse save(ReservationRequest reservationRequest, Member member) {
+        String name;
+        if (reservationRequest.name() != null) {
+            name = reservationRequest.name();
+        } else if (member != null) {
+            name = member.getName();
+        } else {
+            throw new IllegalArgumentException("이름 정보가 필요합니다");
         }
 
+        Time time = timeRepository.findById(reservationRequest.time())
+                .orElseThrow(() -> new ResourceNotFoundException("Time not found"));
+        Theme theme = themeRepository.findById(reservationRequest.theme())
+                .orElseThrow(() -> new ResourceNotFoundException("Theme not found"));
+
+
         Reservation reservation = new Reservation(
-                reservationRequest.getDate(),
+                reservationRequest.date(),
                 time,
                 theme,
                 member
@@ -93,9 +94,9 @@ public class ReservationService {
                         it.getTheme().getName(),
                         it.getDate(),
                         it.getTime().getValue(),
-                        "예약"
+                        ReservationStatus.RESERVED.getValue()
                 ))
-                .toList();
+                .collect(Collectors.toList());
 
         List<WaitingWithRank> waitings = waitingRepository.findWaitingsWithRankByMemberId(member.getId());
 
@@ -105,7 +106,7 @@ public class ReservationService {
                         wr.getWaiting().getTheme().getName(),
                         wr.getWaiting().getDate(),
                         wr.getWaiting().getTime().getValue(),
-                        wr.getRank() + "번째 예약대기"
+                        ReservationStatus.WAITING.getWaitingStatusWithRank(wr.getRank())
                 ))
                 .toList();
 

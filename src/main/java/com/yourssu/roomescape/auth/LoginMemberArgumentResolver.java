@@ -25,7 +25,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(LoginMember.class);
+        return parameter.hasParameterAnnotation(LoginMember.class) && UserInfo.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
@@ -51,9 +51,11 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             return null;
         }
 
-        String email = jwtTokenProvider.getPayload(token);
-        Member member = memberService.findByEmail(email);
-
-        return new LoginMember(member.getId(), member.getName(), member.getEmail(), member.getRole());
+        try {
+            String email = jwtTokenProvider.getPayload(token);
+            return memberService.findByEmail(email);
+        } catch (Exception e) {
+            return null; // TODO: 예외처리를 어떻게 해야하나
+        }
     }
 }

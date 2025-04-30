@@ -1,10 +1,16 @@
 package com.yourssu.roomescape.member;
 
-import jakarta.persistence.*;
+import com.yourssu.roomescape.auth.UserInfo;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "member") // 테이블 이름 명시적 지정
-public class Member {
+public class Member implements UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +27,6 @@ public class Member {
     @Column(nullable = false)
     private String role;
 
-    // 기본 생성자 - JPA에 필요
     public Member() {
     }
 
@@ -39,23 +44,27 @@ public class Member {
         this.role = role;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
+    @Override
     public String getRole() {
         return role;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

@@ -2,7 +2,6 @@ package com.yourssu.roomescape.waiting;
 
 import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.member.MemberRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +18,7 @@ public class WaitingController {
     @PostMapping("/waitings")
     public ResponseEntity<WaitingResponse> createWaiting(
             @RequestBody WaitingRequest request,
-            LoginMember loginMember
+            @LoginMember Member loginMember
     ) {
         if (loginMember == null) {
             return ResponseEntity.badRequest().build();

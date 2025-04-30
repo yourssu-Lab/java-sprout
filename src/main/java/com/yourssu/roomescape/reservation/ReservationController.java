@@ -2,7 +2,6 @@ package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.member.MemberRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,22 +24,22 @@ public class ReservationController {
     }
 
     @GetMapping("/reservations-mine")
-    public List<MyReservationResponse> myReservations(LoginMember loginMember) {
-        if (loginMember == null) {
+    public List<MyReservationResponse> myReservations(@LoginMember Member member) {
+        if (member == null) {
             return List.of(); // 로그인하지 않은 경우 빈 목록 반환
         }
-        return reservationService.findMyReservationsByMemberId(loginMember.getId());
+        return reservationService.findMyReservationsByMemberId(member.getId());
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity create(@Validated @RequestBody ReservationRequest reservationRequest, LoginMember loginMember) {
-        if (reservationRequest.getName() == null && loginMember == null) {
+    public ResponseEntity create(@Validated @RequestBody ReservationRequest reservationRequest, @LoginMember Member loginMember) {
+        if (reservationRequest.name() == null && loginMember == null) {
             return ResponseEntity.badRequest().build();
         }
 
         ReservationResponse reservation = reservationService.save(reservationRequest, loginMember);
 
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.id())).body(reservation);
     }
 
     @DeleteMapping("/reservations/{id}")
