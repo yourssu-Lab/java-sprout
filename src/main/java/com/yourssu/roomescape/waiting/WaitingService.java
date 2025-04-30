@@ -35,7 +35,6 @@ public class WaitingService {
 
     @Transactional
     public WaitingResponse addWaiting(String date, Long themeId, Long timeId, Member member) {
-        // 중복 예약 확인
         boolean alreadyReserved = reservationRepository.existsByMemberIdAndDateAndThemeIdAndTimeId(
                 member.getId(), date, themeId, timeId);
 
@@ -43,7 +42,6 @@ public class WaitingService {
             throw new IllegalStateException("이미 예약된 시간입니다.");
         }
 
-        // 중복 대기 확인
         boolean alreadyWaiting = waitingRepository.existsByMemberIdAndDateAndThemeIdAndTimeId(
                 member.getId(), date, themeId, timeId);
 
@@ -59,7 +57,6 @@ public class WaitingService {
         Waiting waiting = new Waiting(date, time, theme, member);
         Waiting savedWaiting = waitingRepository.save(waiting);
 
-        // 대기 순번 계산
         Long waitingNumber = waitingRepository.findByDateAndThemeIdAndTimeId(date, themeId, timeId)
                 .stream()
                 .filter(w -> w.getId() <= savedWaiting.getId())
