@@ -1,29 +1,16 @@
 package com.yourssu.roomescape.reservation;
 import jakarta.validation.constraints.NotNull;
 
+public record ReservationRequest(
+        String name,
 
-public class ReservationRequest {
-    private String name;
-    @NotNull(message="date is required")
-    private String date;
-    @NotNull(message="theme is required")
-    private Long theme;
-    @NotNull(message="time is required")
-    private Long time;
+        @NotNull(message="date is required")
+        String date,
 
-    public String getName() {
-        return name;
-    }
+        @NotNull(message="theme is required")
+        Long theme,
 
-    public String getDate() {
-        return date;
-    }
-
-    public Long getTheme() {
-        return theme;
-    }
-
-    public Long getTime() {
-        return time;
-    }
+        @NotNull(message="time is required")
+        Long time
+) {
 }
