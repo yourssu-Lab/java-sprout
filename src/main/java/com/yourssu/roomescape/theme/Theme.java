@@ -1,9 +1,21 @@
 package com.yourssu.roomescape.theme;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Theme {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
     private String name;
+
+    @Column
     private String description;
+
+    @Column
+    private boolean deleted = false;
 
     public Theme() {
     }
@@ -29,5 +41,13 @@ public class Theme {
 
     public String getDescription() {
         return description;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

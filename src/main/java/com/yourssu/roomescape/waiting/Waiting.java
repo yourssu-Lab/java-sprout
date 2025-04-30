@@ -1,16 +1,21 @@
-package com.yourssu.roomescape.reservation;
+package com.yourssu.roomescape.waiting;
 
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-public class Reservation {
+public class Waiting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column
+    private String name;
+
+    @Column(nullable = false)
     private String date;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,31 +31,21 @@ public class Reservation {
     private Member member;
 
     @Column(nullable = false)
-    private String name;  // name 필드 추가
+    private LocalDateTime createdAt;
 
-
-    public Reservation(Long id, String date, Time time, Theme theme) {
-        this.id = id;
-        this.date = date;
-        this.time = time;
-        this.theme = theme;
+    public Waiting() {
     }
 
-    public Reservation(String date, Time time, Theme theme, Member member) {
+    public Waiting(String date, Time time, Theme theme, Member member) {
         this.date = date;
         this.time = time;
         this.theme = theme;
         this.member = member;
-
-        if (member != null) {
-            this.name = member.getName();
-        }
+        this.name = member.getName();
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Reservation() {
-
-    }
-
+    // Getters
     public Long getId() {
         return id;
     }
@@ -71,11 +66,7 @@ public class Reservation {
         return member;
     }
 
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
-    public String getName() {
-        return member.getName();
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }
