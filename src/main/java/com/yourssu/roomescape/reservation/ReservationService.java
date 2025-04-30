@@ -71,7 +71,15 @@
         }
 
         @Transactional
-        public void deleteById(Long id) {
+        public void deleteById(Long id, Member member) {
+
+            Reservation reservation = reservationRepository.findById(id)
+                    .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
+
+            if(reservation.getMember() != member) {
+                throw new CustomException(ErrorCode.NO_PERMISSION_FOR_RESERVATION);
+            }
+
             reservationRepository.deleteById(id);
         }
 
