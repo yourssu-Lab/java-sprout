@@ -4,6 +4,7 @@ import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.reservation.dto.ReservationWaitingWithRank;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,10 +13,17 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    List<Reservation> findByStatus(ReservationStatus status);
+    @Query("SELECT r FROM Reservation r " +
+            "JOIN FETCH r.member " +
+            "JOIN FETCH r.time " +
+            "JOIN FETCH r.theme " +
+            "WHERE r.status = :status")
+    List<Reservation> findByStatus(@Param("status") ReservationStatus status);
 
+    @EntityGraph(attributePaths = {"member", "time", "theme"})
     List<Reservation> findByMemberAndStatus(Member member, ReservationStatus status);
 
+    @EntityGraph(attributePaths = {"time"})
     List<Reservation> findByDateAndThemeId(String date, Long themeId);
 
     @Query("SELECT new com.yourssu.roomescape.reservation.dto.ReservationWaitingWithRank(" +
