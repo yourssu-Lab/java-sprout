@@ -178,8 +178,15 @@ function requestDelete(id) {
 
   return fetch(`${RESERVATION_API_ENDPOINT}/${id}`, requestOptions)
       .then(response => {
-        if (response.status !== 204) throw new Error('Delete failed');
-      });
+        if (response.status === 204) {
+          // 삭제 성공
+          alert('삭제에 성공했습니다.');
+        } else {
+          // 실패
+          alert('삭제에 실패했습니다.');
+          throw new Error('Delete failed');
+        }
+      })
 }
 
 function requestRead(endpoint) {

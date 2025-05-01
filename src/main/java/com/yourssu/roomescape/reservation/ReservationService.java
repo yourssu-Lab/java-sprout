@@ -78,7 +78,7 @@
             Reservation reservation = reservationRepository.findById(id)
                     .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 
-            if(reservation.getMember() != member) {
+            if(reservation.getMember() != member && !member.getRole().equals("ADMIN")) {
                 throw new CustomException(ErrorCode.NO_PERMISSION_FOR_RESERVATION);
             }
 
