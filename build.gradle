@@ -24,8 +24,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.4.4'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    implementation 'dev.akkinoc.spring.boot:logback-access-spring-boot-starter:4.5.1'
-
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
     implementation 'io.jsonwebtoken:jjwt-gson:0.12.6'

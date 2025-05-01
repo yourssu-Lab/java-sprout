@@ -38,7 +38,6 @@ public class AuthController {
     public ResponseEntity<CheckLoginResponse> loginCheck(HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
-        System.out.println(Arrays.toString(cookies));
         String token = TokenExtractor.extractTokenFromCookies(cookies);
 
         String name = authService.checkLogin(token).getName();

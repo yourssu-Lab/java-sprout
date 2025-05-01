@@ -27,7 +27,8 @@ public class AdminAuthorizationInterceptor implements HandlerInterceptor {
 
         if(!"ADMIN".equals(member.getRole())) {
             response.setStatus(401);
-            response.getWriter().write("해당 접근에 대한 권한이 없습니다.");
+            response.setContentType("application/json; charset=UTF-8");
+            response.getWriter().write("{\"code\":\"NOT_ADMIN\",\"message\":\"관리자 권한이 필요합니다.\"}");
             return false;
         }
 
