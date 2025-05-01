@@ -2,6 +2,7 @@ package com.yourssu.roomescape.reservation.waiting;
 
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,8 +27,8 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
                 FROM Waiting w
                 WHERE w.member.id = :memberId
             """)
-
-    List<WaitingWithRank> findWithRankByMemberId(@Param("memberId")Long memberId);
+    @EntityGraph(attributePaths = {"theme", "time"})
+    List<WaitingWithRank> findWithRankByMemberId(@Param("memberId") Long memberId);
 
     @Query("""
             SELECT COUNT(w)
