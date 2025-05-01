@@ -8,7 +8,7 @@ const themesOptions = [];
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('add-button').addEventListener('click', addInputRow);
 
-  requestRead(RESERVATION_API_ENDPOINT)
+  requestRead(RESERVATION_API_ENDPOINT + '/admin')
       .then(render)
       .catch(error => console.error('Error fetching reservations:', error));
 
@@ -23,7 +23,7 @@ function render(data) {
   data.forEach(item => {
     const row = tableBody.insertRow();
 
-    row.insertCell(0).textContent = item.id;
+    row.insertCell(0).textContent = item.reservationId;
     row.insertCell(1).textContent = item.name;
     row.insertCell(2).textContent = item.theme;
     row.insertCell(3).textContent = item.date;

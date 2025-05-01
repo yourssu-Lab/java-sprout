@@ -4,6 +4,7 @@
     import com.yourssu.roomescape.exception.ErrorCode;
     import com.yourssu.roomescape.member.Member;
     import com.yourssu.roomescape.member.MemberRepository;
+    import com.yourssu.roomescape.reservation.dto.ReservationFindAllForAdminResponse;
     import com.yourssu.roomescape.reservation.dto.ReservationFindAllResponse;
     import com.yourssu.roomescape.reservation.dto.ReservationSaveRequest;
     import com.yourssu.roomescape.reservation.dto.ReservationSaveResponse;
@@ -16,6 +17,7 @@
     import org.springframework.transaction.annotation.Transactional;
 
     import java.util.List;
+    import java.util.stream.Collectors;
     import java.util.stream.Stream;
 
     @Service
@@ -92,5 +94,17 @@
                             waitingsWithRank.stream().map(ReservationFindAllResponse::fromWaitingWithRank)
                     )
                     .toList();
+        }
+
+        public List<ReservationFindAllForAdminResponse> getAllReservations(Member member) {
+            if(!member.getRole().equals("ADMIN")) {
+                throw new CustomException(ErrorCode.NOT_ADMIN);
+            }
+
+            List<Reservation> reservedReservations = reservationRepository.findByStatus(ReservationStatus.RESERVED);
+
+            return reservedReservations.stream()
+                    .map(ReservationFindAllForAdminResponse::from)
+                    .collect(Collectors.toList());
         }
     }

@@ -4,6 +4,7 @@ import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.exception.CustomException;
 import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.reservation.dto.ReservationFindAllForAdminResponse;
 import com.yourssu.roomescape.reservation.dto.ReservationFindAllResponse;
 import com.yourssu.roomescape.reservation.dto.ReservationSaveRequest;
 import com.yourssu.roomescape.reservation.dto.ReservationSaveResponse;
@@ -27,6 +28,11 @@ public class ReservationController {
     @GetMapping("/mine")
     public List<ReservationFindAllResponse> getMyReservations(@LoginMember Member member) {
         return reservationService.getMyReservations(member);
+    }
+
+    @GetMapping("/admin")
+    public List<ReservationFindAllForAdminResponse> getAllReservations(@LoginMember Member member) {
+        return reservationService.getAllReservations(member);
     }
 
     @PostMapping
