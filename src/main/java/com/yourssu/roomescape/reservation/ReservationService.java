@@ -42,6 +42,7 @@ public class ReservationService {
         this.waitingRepository = waitingRepository;
     }
 
+    @Transactional
     public ReservationResponse save(ReservationRequest request, LoginMember loginMember) {
         Member member = (request.name() != null && !request.name().isBlank())
                 ? memberRepository.findByName(request.name())

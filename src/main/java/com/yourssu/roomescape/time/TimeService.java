@@ -3,6 +3,7 @@ package com.yourssu.roomescape.time;
 import com.yourssu.roomescape.reservation.Reservation;
 import com.yourssu.roomescape.reservation.ReservationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class TimeService {
         this.reservationRepository = reservationRepository;
     }
 
+    @Transactional
     public List<AvailableTime> getAvailableTime(String date, Long themeId) {
         List<Reservation> reservations = reservationRepository.findByDateAndThemeId(date, themeId);
         List<Time> times = timeRepository.findByDeletedFalse();
