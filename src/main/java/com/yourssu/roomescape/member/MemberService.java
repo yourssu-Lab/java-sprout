@@ -1,6 +1,5 @@
 package com.yourssu.roomescape.member;
 
-import com.yourssu.roomescape.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

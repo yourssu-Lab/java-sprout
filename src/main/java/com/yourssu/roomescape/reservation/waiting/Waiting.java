@@ -8,8 +8,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @NoArgsConstructor
@@ -28,8 +26,6 @@ public class Waiting {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Time time;
-
-    private LocalDateTime createdAt;
 
     public Waiting(Member member, String date, Time time, Theme theme) {
         this.member = member;
