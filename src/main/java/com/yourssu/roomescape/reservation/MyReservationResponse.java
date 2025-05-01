@@ -1,9 +1,16 @@
 package com.yourssu.roomescape.reservation;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yourssu.roomescape.reservation.waiting.Waiting;
 import com.yourssu.roomescape.reservation.waiting.WaitingWithRank;
 
-public record MyReservationResponse(Long reservationId, String theme, String date, String time, String status) {
+public record MyReservationResponse(
+        @JsonProperty("id") Long Id,
+        String theme,
+        String date,
+        String time,
+        String status
+) {
 
     public static MyReservationResponse of(Reservation reservation) {
         return new MyReservationResponse(

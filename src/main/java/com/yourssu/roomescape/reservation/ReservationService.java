@@ -116,4 +116,17 @@ public class ReservationService {
         boolean exists = waitingRepository.existsByMemberIdAndDateAndTimeAndTheme(memberId, date, time, theme);
         if (exists) throw new IllegalArgumentException("이미 예약 대기 중입니다.");
     }
+
+    @Transactional
+    public void cancelWaiting(Long waitingId, LoginMember loginMember) {
+        Waiting waiting = waitingRepository.findById(waitingId)
+                .orElseThrow(() -> new IllegalArgumentException("예약 대기를 찾을 수 없습니다."));
+
+        if (!waiting.getMember().getId().equals(loginMember.id())) {
+            throw new IllegalArgumentException("본인의 예약 대기만 취소할 수 있습니다.");
+        }
+
+        waitingRepository.delete(waiting);
+    }
+
 }

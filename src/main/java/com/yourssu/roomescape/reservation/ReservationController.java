@@ -47,4 +47,11 @@ public class ReservationController {
         WaitingResponse waitingResponse = reservationService.createWaiting(request, loginMember);
         return ResponseEntity.created(URI.create("/waitings/" + waitingResponse.id())).body(waitingResponse);
     }
+
+    @DeleteMapping("/waitings/{id}")
+    public ResponseEntity cancelWaiting(@PathVariable Long id, @LoginMemberAnnotation LoginMember loginMember) {
+        reservationService.cancelWaiting(id, loginMember);
+        return ResponseEntity.noContent().build();
+    }
+
 }
