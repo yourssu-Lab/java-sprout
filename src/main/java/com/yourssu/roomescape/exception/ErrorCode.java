@@ -17,6 +17,7 @@ public enum ErrorCode {
 	// Reservation
 	RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 정보를 찾을 수 없습니다."),
 	NO_PERMISSION_FOR_RESERVATION(HttpStatus.FORBIDDEN, "해당 예약에 대한 권한이 없습니다."),
+	RESERVATION_ALREADY_EXISTS(HttpStatus.CONFLICT, "예약 정보가 이미 존재합니다."),
 
 	// Time
 	TIME_NOT_FOUND(HttpStatus.NOT_FOUND, "시간 정보를 찾을 수 없습니다."),

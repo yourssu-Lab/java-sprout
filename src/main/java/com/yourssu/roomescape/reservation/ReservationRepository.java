@@ -26,6 +26,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @EntityGraph(attributePaths = {"time"})
     List<Reservation> findByDateAndThemeId(String date, Long themeId);
 
+    boolean existsByMemberAndThemeAndDateAndTime(Member member, Theme theme, String date, Time time);
+
     @Query("SELECT new com.yourssu.roomescape.reservation.dto.ReservationWaitingWithRank(" +
             "    r, " +
             "    (SELECT COUNT(r2) " +

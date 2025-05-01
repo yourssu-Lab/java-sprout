@@ -52,6 +52,8 @@
             Theme theme = themeRepository.findById(reservationSaveRequest.theme())
                     .orElseThrow(() -> new CustomException(ErrorCode.THEME_NOT_FOUND));
 
+            checkDuplicateReservation(existingMember, theme, reservationSaveRequest.date(), time);
+
             Reservation reservation = new Reservation(
                     existingMember,
                     reservationSaveRequest.date(),
@@ -106,5 +108,12 @@
             return reservedReservations.stream()
                     .map(ReservationFindAllForAdminResponse::from)
                     .collect(Collectors.toList());
+        }
+
+        private void checkDuplicateReservation(Member member, Theme theme, String date, Time time) {
+            boolean reservationExists = reservationRepository.existsByMemberAndThemeAndDateAndTime(member, theme, date, time);
+            if (reservationExists) {
+                throw new CustomException(ErrorCode.RESERVATION_ALREADY_EXISTS);
+            }
         }
     }
