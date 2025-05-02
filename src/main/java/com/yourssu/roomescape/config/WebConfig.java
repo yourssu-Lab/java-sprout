@@ -1,8 +1,6 @@
 package com.yourssu.roomescape.config;
 
 import com.yourssu.roomescape.auth.LoginMemberArgumentResolver;
-import com.yourssu.roomescape.member.MemberRepository;
-import com.yourssu.roomescape.util.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -12,19 +10,17 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final MemberRepository memberRepository;
-    private final JwtTokenProvider jwtTokenProvider;
     private final AdminInterceptor adminInterceptor;
+    private final LoginMemberArgumentResolver loginMemberArgumentResolver;
 
-    public WebConfig(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider, AdminInterceptor adminInterceptor) {
-        this.memberRepository = memberRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
+    public WebConfig(AdminInterceptor adminInterceptor, LoginMemberArgumentResolver loginMemberArgumentResolver) {
         this.adminInterceptor = adminInterceptor;
+        this.loginMemberArgumentResolver = loginMemberArgumentResolver;
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new LoginMemberArgumentResolver(memberRepository, jwtTokenProvider));
+        resolvers.add(loginMemberArgumentResolver);
     }
 
     @Override
