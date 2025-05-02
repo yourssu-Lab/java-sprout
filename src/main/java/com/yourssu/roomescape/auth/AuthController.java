@@ -32,8 +32,6 @@ public class AuthController {
     @GetMapping("/login/check")
     public ResponseEntity<LoginCheckResponse> checkLogin(HttpServletRequest request) {
         String token = CookieUtil.extractTokenFromCookies(request.getCookies());
-        if (token == null || token.isEmpty()) return ResponseEntity.status(401).build();
-
         String name = authService.getNameFromToken(token);
         return ResponseEntity.ok(new LoginCheckResponse(name));
     }

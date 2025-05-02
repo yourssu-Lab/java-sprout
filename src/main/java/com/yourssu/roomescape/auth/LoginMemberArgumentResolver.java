@@ -38,11 +38,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
         String token = CookieUtil.extractTokenFromCookies(request.getCookies());
-
-        if (token == null || token.isBlank()) {
-            throw new UnauthenticatedException("토큰이 존재하지 않거나 비어 있습니다.");
-        }
-
         String email = jwtTokenProvider.getEmail(token);
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundException("이메일로 회원을 찾을 수 없습니다: " + email));
