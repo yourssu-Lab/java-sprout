@@ -2,6 +2,7 @@ package com.yourssu.roomescape.member;
 
 import com.yourssu.roomescape.auth.LoginRequest;
 import com.yourssu.roomescape.auth.TokenDto;
+import com.yourssu.roomescape.common.exception.BadRequestException;
 import com.yourssu.roomescape.common.exception.ResourceNotFoundException;
 import com.yourssu.roomescape.common.exception.UnauthorizedException;
 import com.yourssu.roomescape.common.security.JwtTokenProvider;
@@ -20,6 +21,11 @@ public class MemberService {
 
     @Transactional
     public MemberResponse createMember(MemberRequest memberRequest) {
+        memberRepository.findByEmail(memberRequest.email())
+                .ifPresent(member -> {
+                    throw new BadRequestException("이미 사용 중인 이메일입니다");
+                });
+
         Member member = memberRepository.save(new Member(
                 memberRequest.name(),
                 memberRequest.email(),
