@@ -16,11 +16,11 @@ public class MemberService {
 
     public MemberResponse createMember(MemberRequest memberRequest) {
 
-        if(memberRepository.existsByEmail(memberRequest.getEmail())) {
+        if(memberRepository.existsByEmail(memberRequest.email())) {
             throw new CustomException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
 
-        Member member = memberRepository.save(new Member(memberRequest.getName(), memberRequest.getEmail(), memberRequest.getPassword(), MemberRole.USER));
+        Member member = memberRepository.save(new Member(memberRequest.name(), memberRequest.email(), memberRequest.password(), MemberRole.USER));
 
         return new MemberResponse(member.getId(), member.getName(), member.getEmail());
     }
