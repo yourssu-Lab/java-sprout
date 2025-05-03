@@ -36,6 +36,13 @@ public class ExceptionController {
                 .body(new ErrorResponse("접근 권한이 없습니다", e.getMessage()));
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("요청 처리 불가", e.getMessage()));
+    }
+
     // 기타 예외에 대한 폴백 핸들러
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleServerError(Exception e) {

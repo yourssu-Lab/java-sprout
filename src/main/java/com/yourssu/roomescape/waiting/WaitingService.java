@@ -33,16 +33,15 @@ public class WaitingService {
         this.timeRepository = timeRepository;
     }
 
-    @Transactional
-    public WaitingResponse addWaiting(String date, Long themeId, Long timeId, Member member) {
+    private WaitingResponse addWaiting(String date, Long themeId, Long timeId, Member member) {
         boolean alreadyReserved = reservationRepository.existsByMemberIdAndDateAndThemeIdAndTimeId(
                 member.getId(), date, themeId, timeId);
 
         if (alreadyReserved) {
-            throw new IllegalStateException("이미 예약된 시간입니다.");
+            throw new IllegalStateException("이미 예약한 시간입니다.");
         }
 
-        boolean alreadyWaiting = waitingRepository.existsByMemberIdAndDateAndThemeIdAndTimeId(
+        boolean alreadyWaiting = waitingRepository.existsByMember_IdAndDateAndTheme_IdAndTime_Id(
                 member.getId(), date, themeId, timeId);
 
         if (alreadyWaiting) {
