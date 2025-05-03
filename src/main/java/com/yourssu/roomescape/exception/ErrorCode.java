@@ -13,6 +13,7 @@ public enum ErrorCode {
 	// Member
 	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자의 정보를 찾을 수 없습니다."),
 	NOT_ADMIN(HttpStatus.FORBIDDEN, "관리자 권한이 필요합니다."),
+	EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "이메일 정보가 이미 존재합니다."),
 
 	// Reservation
 	RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 정보를 찾을 수 없습니다."),
