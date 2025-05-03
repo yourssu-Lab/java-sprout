@@ -76,6 +76,6 @@ public class Reservation {
     }
 
     public String getName() {
-        return member.getName();
+        return name;
     }
 }
