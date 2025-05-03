@@ -80,7 +80,7 @@
             Reservation reservation = reservationRepository.findById(id)
                     .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 
-            if(reservation.getMember() != member && !member.getRole().equals("ADMIN")) {
+            if(reservation.getMember() != member && !member.isAdmin()) {
                 throw new CustomException(ErrorCode.NO_PERMISSION_FOR_RESERVATION);
             }
 
@@ -99,7 +99,7 @@
         }
 
         public List<ReservationFindAllForAdminResponse> getAllReservations(Member member) {
-            if(!member.getRole().equals("ADMIN")) {
+            if(!member.isAdmin()) {
                 throw new CustomException(ErrorCode.NOT_ADMIN);
             }
 
