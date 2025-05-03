@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.reservation;
 
+import com.yourssu.roomescape.auth.UserInfo;
 import com.yourssu.roomescape.common.exception.ResourceNotFoundException;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
@@ -36,12 +37,16 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponse save(ReservationRequest reservationRequest, Member member) {
+    public ReservationResponse save(ReservationRequest reservationRequest, UserInfo userInfo) {
         String name;
-        if (reservationRequest.name() != null) {
+        Member member = null;
+
+        if (userInfo != null) {
+            member = memberRepository.findById(userInfo.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Member not found"));
+            name = userInfo.getName();
+        } else if (reservationRequest.name() != null) {
             name = reservationRequest.name();
-        } else if (member != null) {
-            name = member.getName();
         } else {
             throw new IllegalArgumentException("이름 정보가 필요합니다");
         }
@@ -50,7 +55,6 @@ public class ReservationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Time not found"));
         Theme theme = themeRepository.findById(reservationRequest.theme())
                 .orElseThrow(() -> new ResourceNotFoundException("Theme not found"));
-
 
         Reservation reservation = new Reservation(
                 reservationRequest.date(),
