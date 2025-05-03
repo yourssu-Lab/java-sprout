@@ -53,6 +53,7 @@
                     .orElseThrow(() -> new CustomException(ErrorCode.THEME_NOT_FOUND));
 
             checkDuplicateReservation(existingMember, theme, reservationSaveRequest.date(), time);
+            validateWaitingCondition(theme, reservationSaveRequest.date(), time, reservationSaveRequest.status());
 
             Reservation reservation = new Reservation(
                     existingMember,
@@ -114,6 +115,17 @@
             boolean reservationExists = reservationRepository.existsByMemberAndThemeAndDateAndTime(member, theme, date, time);
             if (reservationExists) {
                 throw new CustomException(ErrorCode.RESERVATION_ALREADY_EXISTS);
+            }
+        }
+
+        private void validateWaitingCondition(Theme theme, String date, Time time, ReservationStatus status) {
+            if (status == ReservationStatus.WAITING) {
+                boolean reservedExists = reservationRepository.existsByThemeAndDateAndTimeAndStatus(
+                        theme, date, time, ReservationStatus.RESERVED
+                );
+                if (!reservedExists) {
+                    throw new CustomException(ErrorCode.CANNOT_WAIT_WITHOUT_RESERVED);
+                }
             }
         }
     }
