@@ -1,6 +1,7 @@
 package com.yourssu.roomescape.auth;
 
 import com.yourssu.roomescape.common.AppConstants;
+import com.yourssu.roomescape.common.exception.UnauthorizedException;
 import com.yourssu.roomescape.common.security.JwtTokenProvider;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberService;
@@ -55,7 +56,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             String email = jwtTokenProvider.getPayload(token);
             return memberService.findByEmail(email);
         } catch (Exception e) {
-            return null; // TODO: 예외처리를 어떻게 해야하나
+            throw new UnauthorizedException("Invalid credentials");
         }
     }
 }
