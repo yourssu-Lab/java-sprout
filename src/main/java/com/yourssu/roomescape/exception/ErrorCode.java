@@ -22,9 +22,11 @@ public enum ErrorCode {
 
 	// Time
 	TIME_NOT_FOUND(HttpStatus.NOT_FOUND, "시간 정보를 찾을 수 없습니다."),
+	TIME_IN_USE(HttpStatus.BAD_REQUEST, "해당 시간은 예약이 존재하여 삭제할 수 없습니다."),
 
 	// Theme
-	THEME_NOT_FOUND(HttpStatus.NOT_FOUND, "테마 정보를 찾을 수 없습니다.");
+	THEME_NOT_FOUND(HttpStatus.NOT_FOUND, "테마 정보를 찾을 수 없습니다."),
+	THEME_IN_USE(HttpStatus.BAD_REQUEST, "해당 테마는 예약이 존재하여 삭제할 수 없습니다.");
 
 	private final HttpStatus status;
 	private final String message;

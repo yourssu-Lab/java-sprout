@@ -1,5 +1,7 @@
 package com.yourssu.roomescape.time;
 
+import com.yourssu.roomescape.exception.CustomException;
+import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.reservation.Reservation;
 import com.yourssu.roomescape.reservation.ReservationRepository;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,10 @@ public class TimeService {
     }
 
     public void deleteById(Long id) {
+        if (reservationRepository.existsByTimeId(id)) {
+            throw new CustomException(ErrorCode.TIME_IN_USE);
+        }
+
         timeRepository.deleteById(id);
     }
 }

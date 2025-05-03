@@ -54,4 +54,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                          @Param("date") String date,
                          @Param("time") Time time,
                          @Param("reservationId") Long reservationId);
+
+    boolean existsByTimeId(Long timeId);
+    boolean existsByThemeId(Long themeId);
 }
