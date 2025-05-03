@@ -62,7 +62,7 @@ public class MissionStepTest {
         Map<String, String> params = new HashMap<>();
         params.put("date", "2024-03-01");
         params.put("time", "1");
-        params.put("theme", "1");
+        params.put("theme", "2");
         params.put("status", "RESERVED");
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -133,8 +133,8 @@ public class MissionStepTest {
 
         Map<String, String> params = new HashMap<>();
         params.put("date", "2024-03-01");
-        params.put("time", "1");
-        params.put("theme", "1");
+        params.put("time", "2");
+        params.put("theme", "2");
         params.put("status", "WAITING");
 
         // 예약 대기 생성
@@ -165,6 +165,6 @@ public class MissionStepTest {
                 .map(ReservationFindAllResponse::status)
                 .orElse(null);
 
-        assertThat(status).isEqualTo("2번째 예약대기");
+        assertThat(status).isEqualTo("1번째 예약대기");
     }
 }
