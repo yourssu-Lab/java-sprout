@@ -28,4 +28,12 @@ public class ExceptionController {
                 .status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus())
                 .body(new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR));
     }
+
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicate(DuplicateException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(new ErrorResponse(e.getErrorCode()));
+    }
+
 }

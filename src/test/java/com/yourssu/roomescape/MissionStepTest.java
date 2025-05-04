@@ -66,7 +66,7 @@ public class MissionStepTest {
         String token = createToken("admin@email.com", "password");  // 일단계에서 토큰을 추출하는 로직을 메서드로 따로 만들어서 활용하세요.
 
         Map<String, String> params = new HashMap<>();
-        params.put("date", "2024-03-01");
+        params.put("date", "2024-05-01");
         params.put("time", "1");
         params.put("theme", "1");
 

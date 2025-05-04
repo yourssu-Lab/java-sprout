@@ -1,6 +1,7 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.auth.LoginMember;
+import com.yourssu.roomescape.exception.DuplicateException;
 import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.exception.MemberNotFoundException;
 import com.yourssu.roomescape.member.Member;
@@ -54,12 +55,19 @@ public class ReservationService {
         Time time = timeRepository.findById(request.time()).orElseThrow();
         Theme theme = themeRepository.findById(request.theme()).orElseThrow();
 
+        validateNotDuplicateReservation(member.getId(), request.date(), time.getId(), theme.getId());
         Reservation reservation = new Reservation(member, request.date(), time, theme);
         reservationRepository.save(reservation);
 
         return ReservationResponse.of(reservation);
     }
 
+    private void validateNotDuplicateReservation(Long memberId, String date, Long timeId, Long themeId) {
+        boolean exists = reservationRepository.existsByMemberIdAndDateAndTimeIdAndThemeId(memberId, date, timeId, themeId);
+        if (exists) {
+            throw new DuplicateException(ErrorCode.RESERVATION_ALREADY_EXISTS);
+        }
+    }
     public void deleteById(Long id) {
         reservationRepository.deleteById(id);
     }
@@ -101,6 +109,7 @@ public class ReservationService {
         Time time = timeRepository.findById(request.time()).orElseThrow();
         Theme theme = themeRepository.findById(request.theme()).orElseThrow();
 
+        validateNotDuplicateReservation(member.getId(), request.date(), time.getId(), theme.getId());
         validateNotDuplicateWaiting(member.getId(), request.date(), time, theme);
 
         Waiting waiting = new Waiting(member, request.date(), time, theme);
@@ -115,7 +124,9 @@ public class ReservationService {
 
     private void validateNotDuplicateWaiting(Long memberId, String date, Time time, Theme theme) {
         boolean exists = waitingRepository.existsByMemberIdAndDateAndTimeAndTheme(memberId, date, time, theme);
-        if (exists) throw new IllegalArgumentException("이미 예약 대기 중입니다.");
+        if (exists) {
+            throw new DuplicateException(ErrorCode.WAITING_ALREADY_EXISTS);
+        }
     }
 
     @Transactional
