@@ -36,22 +36,20 @@ public class MemberService {
     }
 
     public TokenDto login(LoginRequest loginRequest) {
+        Member member = memberRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!member.getPassword().equals(loginRequest.getPassword())) {
+            throw new UnauthorizedException("Invalid credentials");
+        }
+
         try {
-            Member member = memberRepository.findByEmail(loginRequest.getEmail())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-            if (!member.getPassword().equals(loginRequest.getPassword())) {
-                throw new RuntimeException("Invalid password");
-            }
-
             String token = jwtTokenProvider.createToken(member.getEmail());
             return new TokenDto(token);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Invalid credentials", e);
+            throw new RuntimeException("인증 토큰 생성에 실패했습니다");
         }
     }
-
     public String loginCheck(String token) {
 
         String email = jwtTokenProvider.getPayload(token);

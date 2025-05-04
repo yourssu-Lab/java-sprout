@@ -2,6 +2,7 @@ package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.auth.UserInfo;
 import com.yourssu.roomescape.common.exception.ResourceNotFoundException;
+import com.yourssu.roomescape.common.exception.UnauthorizedException;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.theme.Theme;
@@ -48,7 +49,7 @@ public class ReservationService {
         } else if (reservationRequest.name() != null) {
             name = reservationRequest.name();
         } else {
-            throw new IllegalArgumentException("이름 정보가 필요합니다");
+            throw new UnauthorizedException("login is required");
         }
 
         Time time = timeRepository.findById(reservationRequest.time())
