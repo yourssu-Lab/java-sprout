@@ -1,7 +1,7 @@
 package com.yourssu.roomescape.auth;
 
+import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.exception.MemberNotFoundException;
-import com.yourssu.roomescape.exception.UnauthenticatedException;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.util.CookieUtil;
@@ -40,7 +40,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         String token = CookieUtil.extractTokenFromCookies(request.getCookies());
         String email = jwtTokenProvider.getEmail(token);
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberNotFoundException("이메일로 회원을 찾을 수 없습니다: " + email));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND, "이메일: " + email));
 
         return new LoginMember(member.getId(), member.getName(), member.getEmail(), member.getRole());
     }

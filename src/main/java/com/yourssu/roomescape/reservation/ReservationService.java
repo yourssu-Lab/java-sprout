@@ -1,6 +1,7 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.auth.LoginMember;
+import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.exception.MemberNotFoundException;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
@@ -46,9 +47,9 @@ public class ReservationService {
     public ReservationResponse save(ReservationRequest request, LoginMember loginMember) {
         Member member = (request.name() != null && !request.name().isBlank())
                 ? memberRepository.findByName(request.name())
-                .orElseThrow(() -> new MemberNotFoundException("이름이 일치하는 회원이 없습니다."))
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND, "이름: "+ request.name()))
                 : memberRepository.findByEmail(loginMember.email())
-                .orElseThrow(() -> new MemberNotFoundException("이메일이 일치하는 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND, "이메일: " + loginMember.email()));
 
         Time time = timeRepository.findById(request.time()).orElseThrow();
         Theme theme = themeRepository.findById(request.theme()).orElseThrow();
@@ -95,7 +96,7 @@ public class ReservationService {
     @Transactional
     public WaitingResponse createWaiting(WaitingRequest request, LoginMember loginMember) {
         Member member = memberRepository.findByEmail(loginMember.email())
-                .orElseThrow(() -> new MemberNotFoundException("이메일이 일치하는 회원이 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND, "이메일"+loginMember.email()));
 
         Time time = timeRepository.findById(request.time()).orElseThrow();
         Theme theme = themeRepository.findById(request.theme()).orElseThrow();

@@ -1,5 +1,6 @@
 package com.yourssu.roomescape.util;
 
+import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.exception.UnauthenticatedException;
 import jakarta.servlet.http.Cookie;
 
@@ -12,7 +13,7 @@ public class CookieUtil {
 
     public static String extractTokenFromCookies(Cookie[] cookies) {
         if (cookies == null) {
-            throw new UnauthenticatedException("쿠키가 없습니다.");
+            throw new UnauthenticatedException(ErrorCode.COOKIE_NOT_FOUND);
         }
 
         for (Cookie cookie : cookies) {
@@ -21,6 +22,6 @@ public class CookieUtil {
             }
         }
 
-        throw new UnauthenticatedException("'token' 이름의 쿠키가 없습니다.");
+        throw new UnauthenticatedException(ErrorCode.TOKEN_NOT_FOUND);
     }
 }

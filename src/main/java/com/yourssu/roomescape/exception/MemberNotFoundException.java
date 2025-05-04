@@ -1,8 +1,14 @@
 package com.yourssu.roomescape.exception;
 
-public class MemberNotFoundException extends RuntimeException {
-    public MemberNotFoundException(String message) {
-        super(message);
-    }
+import lombok.Getter;
 
+@Getter
+public class MemberNotFoundException extends RuntimeException {
+
+    private final ErrorCode errorCode;
+
+    public MemberNotFoundException(ErrorCode errorCode, String detail) {
+        super(errorCode.getMessage() + " " + detail);
+        this.errorCode = errorCode;
+    }
 }
