@@ -34,6 +34,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .subject(member.getEmail())
+                .claim("id", member.getId())
                 .claim("name", member.getName())
                 .claim("role", member.getRole())
                 .issuedAt(now)
