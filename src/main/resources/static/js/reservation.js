@@ -8,7 +8,7 @@ const themesOptions = [];
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('add-button').addEventListener('click', addInputRow);
 
-  requestRead(RESERVATION_API_ENDPOINT)
+  requestRead(RESERVATION_API_ENDPOINT + '/admin')
       .then(render)
       .catch(error => console.error('Error fetching reservations:', error));
 
@@ -23,7 +23,7 @@ function render(data) {
   data.forEach(item => {
     const row = tableBody.insertRow();
 
-    row.insertCell(0).textContent = item.id;
+    row.insertCell(0).textContent = item.reservationId;
     row.insertCell(1).textContent = item.name;
     row.insertCell(2).textContent = item.theme;
     row.insertCell(3).textContent = item.date;
@@ -117,14 +117,6 @@ function createInput(type) {
   return input;
 }
 
-function createActionButton(label, className, eventListener) {
-  const button = document.createElement('button');
-  button.textContent = label;
-  button.classList.add('btn', className, 'mr-2');
-  button.addEventListener('click', eventListener);
-  return button;
-}
-
 function saveRow(event) {
   // 이벤트 전파를 막는다
   event.stopPropagation();
@@ -137,16 +129,21 @@ function saveRow(event) {
 
   const reservation = {
     name: nameInput.value,
-    theme: themeSelect.value,
     date: dateInput.value,
-    time: timeSelect.value
+    theme: Number(themeSelect.value),
+    time: Number(timeSelect.value),
+    status: "RESERVED"
   };
 
   requestCreate(reservation)
       .then(() => {
+        alert('예약이 완료되었습니다.');
         location.reload();
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error:', error);
+        alert('예약에 실패했습니다.');
+      });
 
   isEditing = false;  // isEditing 값을 false로 설정
 }
@@ -181,8 +178,15 @@ function requestDelete(id) {
 
   return fetch(`${RESERVATION_API_ENDPOINT}/${id}`, requestOptions)
       .then(response => {
-        if (response.status !== 204) throw new Error('Delete failed');
-      });
+        if (response.status === 204) {
+          // 삭제 성공
+          alert('삭제에 성공했습니다.');
+        } else {
+          // 실패
+          alert('삭제에 실패했습니다.');
+          throw new Error('Delete failed');
+        }
+      })
 }
 
 function requestRead(endpoint) {

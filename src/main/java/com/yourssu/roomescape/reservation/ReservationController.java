@@ -1,10 +1,12 @@
 package com.yourssu.roomescape.reservation;
 
 import com.yourssu.roomescape.auth.LoginMember;
-import com.yourssu.roomescape.exception.CustomException;
-import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.theme.ThemeDao;
+import com.yourssu.roomescape.reservation.dto.ReservationFindAllForAdminResponse;
+import com.yourssu.roomescape.reservation.dto.ReservationFindAllResponse;
+import com.yourssu.roomescape.reservation.dto.ReservationSaveRequest;
+import com.yourssu.roomescape.reservation.dto.ReservationSaveResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/reservations")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -20,25 +23,27 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/reservations")
-    public List<ReservationResponse> list() {
-        return reservationService.findAll();
+    @GetMapping("/mine")
+    public List<ReservationFindAllResponse> getMyReservations(@LoginMember Member member) {
+        return reservationService.getMyReservations(member);
     }
 
-    @PostMapping("/reservations")
-    public ResponseEntity<ReservationResponse> create(@RequestBody ReservationRequest reservationRequest, @LoginMember Member member) {
-        if (reservationRequest.getDate() == null || reservationRequest.getTheme() == null || reservationRequest.getTime() == null) {
-            throw new CustomException(ErrorCode.INVALID_RESERVATION_REQUEST);
-        }
-
-        ReservationResponse reservation = reservationService.save(reservationRequest, member);
-
-        return ResponseEntity.created(URI.create("/reservations/" + reservation.getId())).body(reservation);
+    @GetMapping("/admin")
+    public List<ReservationFindAllForAdminResponse> getAllReservations(@LoginMember Member member) {
+        return reservationService.getAllReservations(member);
     }
 
-    @DeleteMapping("/reservations/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
-        reservationService.deleteById(id);
+    @PostMapping
+    public ResponseEntity<ReservationSaveResponse> create(@RequestBody @Valid ReservationSaveRequest reservationSaveRequest, @LoginMember Member member) {
+
+        ReservationSaveResponse reservation = reservationService.save(reservationSaveRequest, member);
+
+        return ResponseEntity.created(URI.create("/reservations/" + reservation.id())).body(reservation);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id, @LoginMember Member member) {
+        reservationService.deleteById(id, member);
         return ResponseEntity.noContent().build();
     }
 }

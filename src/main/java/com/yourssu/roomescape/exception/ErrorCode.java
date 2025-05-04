@@ -5,12 +5,31 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에 문제가 생겼습니다."),
+
+	// Auth
 	COOKIE_NOT_FOUND(HttpStatus.UNAUTHORIZED, "쿠키가 존재하지 않습니다."),
 	TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "쿠키에 토큰이 존재하지 않습니다."),
+
+	// Member
 	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자의 정보를 찾을 수 없습니다."),
-	INVALID_RESERVATION_REQUEST(HttpStatus.BAD_REQUEST, "예약 요청 값이 누락되었습니다."),
-	UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "해당 접근에 대한 권한이 없습니다."),
-	DUPLICATE_MEMBER_NAME_EXISTS(HttpStatus.INTERNAL_SERVER_ERROR, "중복된 이름이 존재합니다. 관리자에게 문의하세요.");
+	NOT_ADMIN(HttpStatus.FORBIDDEN, "관리자 권한이 필요합니다."),
+	EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "이메일 정보가 이미 존재합니다."),
+
+	// Reservation
+	RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 정보를 찾을 수 없습니다."),
+	NO_PERMISSION_FOR_RESERVATION(HttpStatus.FORBIDDEN, "해당 예약에 대한 권한이 없습니다."),
+	RESERVATION_ALREADY_EXISTS(HttpStatus.CONFLICT, "예약 정보가 이미 존재합니다."),
+	CANNOT_WAIT_WITHOUT_RESERVED(HttpStatus.BAD_REQUEST, "예약이 없는 상태에서는 대기를 신청할 수 없습니다."),
+
+	// Time
+	TIME_NOT_FOUND(HttpStatus.NOT_FOUND, "시간 정보를 찾을 수 없습니다."),
+	TIME_IN_USE(HttpStatus.BAD_REQUEST, "해당 시간은 예약이 존재하여 삭제할 수 없습니다."),
+	TIME_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 존재하는 시간입니다."),
+
+	// Theme
+	THEME_NOT_FOUND(HttpStatus.NOT_FOUND, "테마 정보를 찾을 수 없습니다."),
+	THEME_IN_USE(HttpStatus.BAD_REQUEST, "해당 테마는 예약이 존재하여 삭제할 수 없습니다."),
+	THEME_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 존재하는 테마입니다.");
 
 	private final HttpStatus status;
 	private final String message;

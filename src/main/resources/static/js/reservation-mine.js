@@ -1,4 +1,4 @@
-const RESERVATION_API_ENDPOINT = '/reservations-mine';
+const RESERVATION_API_ENDPOINT = '/reservations/mine';
 
 document.addEventListener('DOMContentLoaded', () => {
   requestRead(RESERVATION_API_ENDPOINT)
@@ -25,7 +25,13 @@ function render(data) {
       cancelButton.textContent = '취소 '; // 버튼 텍스트 설정
       cancelButton.className = 'btn btn-danger'; // 필요한 경우 CSS 클래스 설정
       cancelButton.onclick = function () {
-        requestDeleteWaiting(item.id).then(() => window.location.reload());
+        requestDeleteWaiting(item.reservationId).then(() => {
+          alert('예약 취소가 완료되었습니다.');
+          window.location.reload();
+        }).catch(error => {
+          console.error('Delete failed:', error);
+          alert('예약 취소에 실패했습니다.');
+        });
       };
       cancelCell.appendChild(cancelButton); // 버튼을 셀에 추가
     } else {
@@ -43,7 +49,7 @@ function requestRead(endpoint) {
 }
 
 function requestDeleteWaiting(id) {
-  const endpoint = '/waitings/' + id;
+  const endpoint = '/reservations/' + id;
   return fetch(endpoint, { method: 'DELETE' })
       .then(response => {
         if (response.status === 204) return;

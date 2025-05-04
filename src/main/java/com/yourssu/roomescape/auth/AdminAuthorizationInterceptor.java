@@ -1,7 +1,5 @@
 package com.yourssu.roomescape.auth;
 
-import com.yourssu.roomescape.exception.CustomException;
-import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.jwt.TokenExtractor;
 import com.yourssu.roomescape.member.Member;
 import jakarta.servlet.http.Cookie;
@@ -25,9 +23,10 @@ public class AdminAuthorizationInterceptor implements HandlerInterceptor {
         String token = TokenExtractor.extractTokenFromCookies(cookies);
         Member member = authService.checkLogin(token);
 
-        if(!"ADMIN".equals(member.getRole())) {
+        if(!member.isAdmin()) {
             response.setStatus(401);
-            response.getWriter().write("해당 접근에 대한 권한이 없습니다.");
+            response.setContentType("application/json; charset=UTF-8");
+            response.getWriter().write("{\"code\":\"NOT_ADMIN\",\"message\":\"관리자 권한이 필요합니다.\"}");
             return false;
         }
 

@@ -1,70 +1,131 @@
-package com.yourssu.roomescape.reservation;
+    package com.yourssu.roomescape.reservation;
 
-import com.yourssu.roomescape.exception.CustomException;
-import com.yourssu.roomescape.exception.ErrorCode;
-import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.member.MemberDao;
-import com.yourssu.roomescape.theme.Theme;
-import com.yourssu.roomescape.theme.ThemeDao;
-import com.yourssu.roomescape.time.Time;
-import com.yourssu.roomescape.time.TimeDao;
-import org.springframework.stereotype.Service;
+    import com.yourssu.roomescape.exception.CustomException;
+    import com.yourssu.roomescape.exception.ErrorCode;
+    import com.yourssu.roomescape.member.Member;
+    import com.yourssu.roomescape.member.MemberRepository;
+    import com.yourssu.roomescape.reservation.dto.ReservationFindAllForAdminResponse;
+    import com.yourssu.roomescape.reservation.dto.ReservationFindAllResponse;
+    import com.yourssu.roomescape.reservation.dto.ReservationSaveRequest;
+    import com.yourssu.roomescape.reservation.dto.ReservationSaveResponse;
+    import com.yourssu.roomescape.reservation.dto.ReservationWaitingWithRank;
+    import com.yourssu.roomescape.theme.Theme;
+    import com.yourssu.roomescape.theme.ThemeRepository;
+    import com.yourssu.roomescape.time.Time;
+    import com.yourssu.roomescape.time.TimeRepository;
+    import org.springframework.stereotype.Service;
+    import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+    import java.util.List;
+    import java.util.stream.Collectors;
+    import java.util.stream.Stream;
 
-@Service
-public class ReservationService {
-    private final ReservationDao reservationDao;
-    private final MemberDao memberDao;
-    private final ThemeDao themeDao;
-    private final TimeDao timeDao;
+    @Service
+    @Transactional(readOnly = true)
+    public class ReservationService {
+        private final ReservationRepository reservationRepository;
+        private final MemberRepository memberRepository;
+        private final TimeRepository timeRepository;
+        private final ThemeRepository themeRepository;
 
-    public ReservationService(ReservationDao reservationDao, MemberDao memberDao, ThemeDao themeDao, TimeDao timeDao) {
-        this.reservationDao = reservationDao;
-        this.memberDao = memberDao;
-        this.themeDao = themeDao;
-        this.timeDao = timeDao;
-    }
-
-    public ReservationResponse save(ReservationRequest reservationRequest, Member member) {
-        String memberName = reservationRequest.getName();
-
-        if (memberName != null) {
-            Member existingMember = memberDao.findByName(memberName)
-                    .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-            memberName = existingMember.getName();
-        } else {
-            memberName = member.getName();
+        public ReservationService(ReservationRepository reservationRepository, MemberRepository memberRepository, TimeRepository timeRepository, ThemeRepository themeRepository) {
+            this.reservationRepository = reservationRepository;
+            this.memberRepository = memberRepository;
+            this.timeRepository = timeRepository;
+            this.themeRepository = themeRepository;
         }
 
-        Time time = timeDao.findById(reservationRequest.getTime());
-        Theme theme = themeDao.findById(reservationRequest.getTheme());
+        @Transactional
+        public ReservationSaveResponse save(ReservationSaveRequest reservationSaveRequest, Member member) {
 
-        Reservation reservation = new Reservation(
-                memberName,
-                reservationRequest.getDate(),
-                time,
-                theme
-        );
+            Member existingMember;
 
-        Reservation newReservation = reservationDao.save(reservation);
+            if (reservationSaveRequest.name() != null) {
+                existingMember = memberRepository.findByName(reservationSaveRequest.name())
+                        .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+            } else {
+                existingMember = member;
+            }
 
-        return new ReservationResponse(
-                newReservation.getId(),
-                newReservation.getName(),
-                newReservation.getTheme().getName(),
-                newReservation.getDate(),
-                newReservation.getTime().getValue());
+            Time time = timeRepository.findById(reservationSaveRequest.time())
+                    .orElseThrow(() -> new CustomException(ErrorCode.TIME_NOT_FOUND));
+            Theme theme = themeRepository.findById(reservationSaveRequest.theme())
+                    .orElseThrow(() -> new CustomException(ErrorCode.THEME_NOT_FOUND));
+
+            checkDuplicateReservation(existingMember, theme, reservationSaveRequest.date(), time);
+            validateWaitingCondition(theme, reservationSaveRequest.date(), time, reservationSaveRequest.status());
+
+            Reservation reservation = new Reservation(
+                    existingMember,
+                    reservationSaveRequest.date(),
+                    time,
+                    theme,
+                    reservationSaveRequest.status()
+            );
+
+            Reservation newReservation = reservationRepository.save(reservation);
+
+            Long waitingRank = reservationRepository.findWaitingRank(
+                    newReservation.getTheme(),
+                    newReservation.getDate(),
+                    newReservation.getTime(),
+                    newReservation.getId()
+            );
+
+            return ReservationSaveResponse.of(newReservation, waitingRank);
+        }
+
+        @Transactional
+        public void deleteById(Long id, Member member) {
+
+            Reservation reservation = reservationRepository.findById(id)
+                    .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
+
+            if(reservation.getMember() != member && !member.isAdmin()) {
+                throw new CustomException(ErrorCode.NO_PERMISSION_FOR_RESERVATION);
+            }
+
+            reservationRepository.deleteById(id);
+        }
+
+        public List<ReservationFindAllResponse> getMyReservations(Member member) {
+            List<Reservation> reservedReservations = reservationRepository.findByMemberAndStatus(member, ReservationStatus.RESERVED);
+            List<ReservationWaitingWithRank> waitingsWithRank = reservationRepository.findWaitingsWithRankByMember(member);
+
+            return Stream.concat(
+                            reservedReservations.stream().map(ReservationFindAllResponse::fromReservation),
+                            waitingsWithRank.stream().map(ReservationFindAllResponse::fromWaitingWithRank)
+                    )
+                    .toList();
+        }
+
+        public List<ReservationFindAllForAdminResponse> getAllReservations(Member member) {
+            if(!member.isAdmin()) {
+                throw new CustomException(ErrorCode.NOT_ADMIN);
+            }
+
+            List<Reservation> reservedReservations = reservationRepository.findByStatus(ReservationStatus.RESERVED);
+
+            return reservedReservations.stream()
+                    .map(ReservationFindAllForAdminResponse::from)
+                    .collect(Collectors.toList());
+        }
+
+        private void checkDuplicateReservation(Member member, Theme theme, String date, Time time) {
+            boolean reservationExists = reservationRepository.existsByMemberAndThemeAndDateAndTime(member, theme, date, time);
+            if (reservationExists) {
+                throw new CustomException(ErrorCode.RESERVATION_ALREADY_EXISTS);
+            }
+        }
+
+        private void validateWaitingCondition(Theme theme, String date, Time time, ReservationStatus status) {
+            if (status == ReservationStatus.WAITING) {
+                boolean reservedExists = reservationRepository.existsByThemeAndDateAndTimeAndStatus(
+                        theme, date, time, ReservationStatus.RESERVED
+                );
+                if (!reservedExists) {
+                    throw new CustomException(ErrorCode.CANNOT_WAIT_WITHOUT_RESERVED);
+                }
+            }
+        }
     }
-
-    public void deleteById(Long id) {
-        reservationDao.deleteById(id);
-    }
-
-    public List<ReservationResponse> findAll() {
-        return reservationDao.findAll().stream()
-                .map(it -> new ReservationResponse(it.getId(), it.getName(), it.getTheme().getName(), it.getDate(), it.getTime().getValue()))
-                .toList();
-    }
-}

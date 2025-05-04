@@ -1,7 +1,10 @@
 package com.yourssu.roomescape.member;
 
+import com.yourssu.roomescape.member.dto.MemberRequest;
+import com.yourssu.roomescape.member.dto.MemberResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +21,9 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequest memberRequest) {
         MemberResponse member = memberService.createMember(memberRequest);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).body(member);
+        return ResponseEntity.created(URI.create("/members/" + member.id())).body(member);
     }
 
     @PostMapping("/logout")
