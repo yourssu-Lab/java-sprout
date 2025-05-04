@@ -48,11 +48,19 @@ class ThemeServiceTest {
     }
 
     @Test
-    @DisplayName("테마 저장 성공")
+    @DisplayName("테마 생성 성공")
     void save_success() {
         Theme saved = themeService.save(new Theme("Theme B", "Desc"));
         assertNotNull(saved.getId());
         assertEquals("Theme B", saved.getName());
+    }
+
+    @Test
+    @DisplayName("테마 생성 실패 - 중복")
+    void save_fail_duplicate() {
+        assertThatThrownBy(() -> themeService.save(new Theme("Theme A", "Desc")))
+                .isInstanceOf(CustomException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.THEME_ALREADY_EXISTS);
     }
 
     @Test

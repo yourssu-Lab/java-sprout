@@ -23,6 +23,10 @@ public class ThemeService {
     }
 
     public Theme save(Theme theme) {
+        if(themeRepository.existsByName(theme.getName())) {
+            throw new CustomException(ErrorCode.THEME_ALREADY_EXISTS);
+        }
+
         return themeRepository.save(theme);
     }
 
