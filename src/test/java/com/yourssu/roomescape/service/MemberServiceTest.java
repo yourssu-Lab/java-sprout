@@ -1,7 +1,11 @@
-package com.yourssu.roomescape.member;
+package com.yourssu.roomescape.service;
 
 import com.yourssu.roomescape.exception.CustomException;
 import com.yourssu.roomescape.exception.ErrorCode;
+import com.yourssu.roomescape.member.Member;
+import com.yourssu.roomescape.member.MemberRepository;
+import com.yourssu.roomescape.member.MemberRole;
+import com.yourssu.roomescape.member.MemberService;
 import com.yourssu.roomescape.member.dto.MemberRequest;
 import com.yourssu.roomescape.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
