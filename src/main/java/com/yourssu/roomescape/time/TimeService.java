@@ -41,6 +41,11 @@ public class TimeService {
     }
 
     public void deleteById(Long id) {
-        timeRepository.deleteById(id);
+        timeRepository.findById(id)
+                .ifPresent(time -> {
+                    time.markDeleted();
+                    timeRepository.save(time);
+                });
+
     }
 }

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @Entity
@@ -15,11 +14,9 @@ public class Time {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Column(name = "time_value", nullable = false)
     private String timeValue;
 
-    @Setter
     @Column(nullable = false)
     private boolean deleted = false;
 
@@ -30,5 +27,9 @@ public class Time {
     public Time(Long id, String timeValue) {
         this.id = id;
         this.timeValue = timeValue;
+    }
+
+    public void markDeleted() {
+        this.deleted = true;
     }
 }
