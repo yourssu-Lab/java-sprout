@@ -24,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class AuthServiceTest {
 
-    @Autowired  private AuthService authService;
-    @Autowired  private TokenProvider tokenProvider;
-    @Autowired  private MemberRepository memberRepository;
+    @Autowired private AuthService authService;
+    @Autowired private TokenProvider tokenProvider;
+    @Autowired private MemberRepository memberRepository;
 
     @BeforeEach
     void setUp() {

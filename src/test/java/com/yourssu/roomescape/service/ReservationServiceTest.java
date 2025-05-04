@@ -35,8 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class ReservationServiceTest {
 
-    @Autowired
-    private ReservationService reservationService;
+    @Autowired private ReservationService reservationService;
     @Autowired private MemberRepository memberRepository;
     @Autowired private ThemeRepository themeRepository;
     @Autowired private TimeRepository timeRepository;
