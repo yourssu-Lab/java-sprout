@@ -37,6 +37,10 @@ public class TimeService {
     }
 
     public Time save(Time time) {
+        if (timeRepository.existsByValue(time.getValue())) {
+            throw new CustomException(ErrorCode.TIME_ALREADY_EXISTS);
+        }
+
         return timeRepository.save(time);
     }
 

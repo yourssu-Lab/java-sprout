@@ -86,6 +86,14 @@ class TimeServiceTest {
     }
 
     @Test
+    @DisplayName("시간 생성 실패 - 중복")
+    void save_fail_duplicate() {
+        assertThatThrownBy(() -> timeService.save(new Time("10:00")))
+                .isInstanceOf(CustomException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.TIME_ALREADY_EXISTS);
+    }
+
+    @Test
     @DisplayName("시간 삭제 성공")
     void delete_success() {
         Time newTime = timeRepository.save(new Time("15:00"));

@@ -24,6 +24,7 @@ public enum ErrorCode {
 	// Time
 	TIME_NOT_FOUND(HttpStatus.NOT_FOUND, "시간 정보를 찾을 수 없습니다."),
 	TIME_IN_USE(HttpStatus.BAD_REQUEST, "해당 시간은 예약이 존재하여 삭제할 수 없습니다."),
+	TIME_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 존재하는 시간입니다."),
 
 	// Theme
 	THEME_NOT_FOUND(HttpStatus.NOT_FOUND, "테마 정보를 찾을 수 없습니다."),
