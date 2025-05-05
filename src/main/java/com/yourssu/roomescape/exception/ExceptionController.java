@@ -14,6 +14,20 @@ public class ExceptionController {
                 .body(new ErrorResponse(e.getErrorCode()));
     }
 
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTimeNotFound(TimeNotFoundException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(new ErrorResponse(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleThemeNotFound(ThemeNotFoundException e) {
+        return ResponseEntity
+                .status(e.getErrorCode().getStatus())
+                .body(new ErrorResponse(e.getErrorCode()));
+    }
+
     @ExceptionHandler(UnauthenticatedException.class)
     public ResponseEntity<ErrorResponse> handleUnauthenticated(UnauthenticatedException e) {
         return ResponseEntity

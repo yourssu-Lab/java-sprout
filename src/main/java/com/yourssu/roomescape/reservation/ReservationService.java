@@ -4,6 +4,8 @@ import com.yourssu.roomescape.auth.LoginMember;
 import com.yourssu.roomescape.exception.DuplicateException;
 import com.yourssu.roomescape.exception.ErrorCode;
 import com.yourssu.roomescape.exception.MemberNotFoundException;
+import com.yourssu.roomescape.exception.ThemeNotFoundException;
+import com.yourssu.roomescape.exception.TimeNotFoundException;
 import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.member.MemberRepository;
 import com.yourssu.roomescape.reservation.waiting.Waiting;
@@ -106,8 +108,11 @@ public class ReservationService {
         Member member = memberRepository.findByEmail(loginMember.email())
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND, "이메일"+loginMember.email()));
 
-        Time time = timeRepository.findById(request.time()).orElseThrow();
-        Theme theme = themeRepository.findById(request.theme()).orElseThrow();
+        Time time = timeRepository.findById(request.time())
+                .orElseThrow(() -> new TimeNotFoundException(ErrorCode.TIME_NOT_FOUND, "time:"+request.time()));
+
+        Theme theme = themeRepository.findById(request.theme())
+                .orElseThrow(() -> new ThemeNotFoundException(ErrorCode.THEME_NOT_FOUND, "theme:"+request.theme()));
 
         validateNotDuplicateReservation(member.getId(), request.date(), time.getId(), theme.getId());
         validateNotDuplicateWaiting(member.getId(), request.date(), time, theme);
