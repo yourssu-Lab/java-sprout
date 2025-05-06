@@ -3,11 +3,11 @@ package com.yourssu.roomescape.exception;
 import lombok.Getter;
 
 @Getter
-public class MemberNotFoundException extends RuntimeException {
+public class TimeNotFoundException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
-    public MemberNotFoundException(ErrorCode errorCode, String detail) {
+    public TimeNotFoundException(ErrorCode errorCode, String detail) {
         super(errorCode.getMessage() + " " + detail);
         this.errorCode = errorCode;
     }

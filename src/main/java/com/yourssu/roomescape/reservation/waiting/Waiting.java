@@ -1,17 +1,17 @@
-package com.yourssu.roomescape.reservation;
+package com.yourssu.roomescape.reservation.waiting;
 
+import com.yourssu.roomescape.member.Member;
 import com.yourssu.roomescape.theme.Theme;
 import com.yourssu.roomescape.time.Time;
-import com.yourssu.roomescape.member.Member;
+import jakarta.persistence.Entity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reservation {
+@NoArgsConstructor
+public class Waiting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,16 +22,15 @@ public class Reservation {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Time time;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     private Theme theme;
 
-    public Reservation(Member member, String date, Time time, Theme theme) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Time time;
+
+    public Waiting(Member member, String date, Time time, Theme theme) {
         this.member = member;
         this.date = date;
         this.time = time;
         this.theme = theme;
     }
-
 }

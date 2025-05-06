@@ -1,8 +1,9 @@
 package com.yourssu.roomescape;
 
-import com.yourssu.roomescape.member.Member;
-import com.yourssu.roomescape.member.MemberDao;
+import com.yourssu.roomescape.member.MemberRepository;
+import com.yourssu.roomescape.reservation.MyReservationResponse;
 import com.yourssu.roomescape.reservation.ReservationResponse;
+import com.yourssu.roomescape.reservation.waiting.WaitingResponse;
 import com.yourssu.roomescape.util.JwtTokenProvider;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,28 +24,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MissionStepTest {
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private MemberRepository memberRepository;
+
+    private String createToken(String email, String password) {
+        return memberRepository.findByEmailAndPassword(email, password)
+                .map(jwtTokenProvider::createToken)
+                .orElseThrow(() -> new RuntimeException("해당 테스트 유저가 존재하지 않습니다."));
+    }
+
     @Test
     void 일단계() {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", "admin@email.com");
-        params.put("password", "password");
+        Map<String, String> params = Map.of("email", "admin@email.com", "password", "password");
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        var response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
-                .when().post("/login")
+                .post("/login")
                 .then().log().all()
                 .statusCode(200)
                 .extract();
 
-        String token = response.headers().get("Set-Cookie").getValue().split(";")[0].split("=")[1];
+        String token = response.header("Set-Cookie").split(";")[0].split("=")[1];
 
         assertThat(token).isNotBlank();
 
-        ExtractableResponse<Response> checkResponse = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
+        var checkResponse = RestAssured.given().log().all()
                 .cookie("token", token)
-                .when().get("/login/check")
+                .get("/login/check")
                 .then().log().all()
                 .statusCode(200)
                 .extract();
@@ -51,26 +61,12 @@ public class MissionStepTest {
         assertThat(checkResponse.body().jsonPath().getString("name")).isEqualTo("어드민");
     }
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private MemberDao memberDao;
-
-    private String createToken(String email, String password) {
-        // 테스트 DB에 있는 회원 조회
-        Member member = memberDao.findByEmailAndPassword(email, password)
-                .orElseThrow(() -> new RuntimeException("테스트 회원이 존재하지 않습니다."));
-
-        return jwtTokenProvider.createToken(member);
-    }
-
     @Test
     void 이단계() {
         String token = createToken("admin@email.com", "password");  // 일단계에서 토큰을 추출하는 로직을 메서드로 따로 만들어서 활용하세요.
 
         Map<String, String> params = new HashMap<>();
-        params.put("date", "2024-03-01");
+        params.put("date", "2024-05-01");
         params.put("time", "1");
         params.put("theme", "1");
 
@@ -83,7 +79,7 @@ public class MissionStepTest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(201);
-        assertThat(response.as(ReservationResponse.class).getName()).isEqualTo("어드민");
+        assertThat(response.as(ReservationResponse.class).name()).isEqualTo("어드민");
 
         params.put("name", "브라운");
 
@@ -96,7 +92,7 @@ public class MissionStepTest {
                 .extract();
 
         assertThat(adminResponse.statusCode()).isEqualTo(201);
-        assertThat(adminResponse.as(ReservationResponse.class).getName()).isEqualTo("브라운");
+        assertThat(adminResponse.as(ReservationResponse.class).name()).isEqualTo("브라운");
     }
 
     @Test
@@ -118,5 +114,57 @@ public class MissionStepTest {
                 .statusCode(200);
     }
 
-}
+    @Test
+    void 오단계() {
+        String adminToken = createToken("admin@email.com", "password");
 
+        List<MyReservationResponse> reservations = RestAssured.given().log().all()
+                .cookie("token", adminToken)
+                .get("/reservations-mine")
+                .then().log().all()
+                .statusCode(200)
+                .extract().jsonPath().getList(".", MyReservationResponse.class);
+
+        assertThat(reservations).hasSize(3);
+    }
+
+    @Test
+    void 육단계() {
+        String brownToken = createToken("brown@email.com", "password");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("date", "2024-03-01");
+        params.put("time", "1");
+        params.put("theme", "1");
+
+        // 예약 대기 생성
+        WaitingResponse waiting = RestAssured.given().log().all()
+                .body(params)
+                .cookie("token", brownToken)
+                .contentType(ContentType.JSON)
+                .post("/waitings")
+                .then().log().all()
+                .statusCode(201)
+                .extract().as(WaitingResponse.class);
+
+        // 내 예약 목록 조회
+        List<MyReservationResponse> myReservations = RestAssured.given().log().all()
+                .body(params)
+                .cookie("token", brownToken)
+                .contentType(ContentType.JSON)
+                .get("/reservations-mine")
+                .then().log().all()
+                .statusCode(200)
+                .extract().jsonPath().getList(".", MyReservationResponse.class);
+
+        // 예약 대기 상태 확인
+        String status = myReservations.stream()
+                .filter(it -> it.Id().equals(waiting.id()))
+                .filter(it -> !it.status().equals("예약"))
+                .findFirst()
+                .map(it -> it.status())
+                .orElse(null);
+
+        assertThat(status).isEqualTo("1번째 예약대기");
+    }
+}

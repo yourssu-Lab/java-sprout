@@ -1,14 +1,7 @@
 package com.yourssu.roomescape.exception;
 
-import lombok.Getter;
-
-@Getter
-public class ErrorResponse {
-
-    private final String message;
-
-    public ErrorResponse(String message) {
-        this.message = message;
+public record ErrorResponse(int status, String message) {
+    public ErrorResponse(ErrorCode errorCode) {
+        this(errorCode.getStatus().value(), errorCode.getMessage());
     }
-
 }

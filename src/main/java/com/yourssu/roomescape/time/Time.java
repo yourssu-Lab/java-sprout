@@ -1,27 +1,35 @@
 package com.yourssu.roomescape.time;
 
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Entity
+@Table(name = "times")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Time {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String value;
 
-    public Time(Long id, String value) {
+    @Column(name = "time_value", nullable = false)
+    private String timeValue;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+    public Time(String timeValue) {
+        this.timeValue = timeValue;
+    }
+
+    public Time(Long id, String timeValue) {
         this.id = id;
-        this.value = value;
+        this.timeValue = timeValue;
     }
 
-    public Time(String value) {
-        this.value = value;
-    }
-
-    public Time() {
-
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getValue() {
-        return value;
+    public void markDeleted() {
+        this.deleted = true;
     }
 }

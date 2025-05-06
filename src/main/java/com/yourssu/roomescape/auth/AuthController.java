@@ -21,7 +21,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request, HttpServletResponse response) {
         AuthResponse authResponse = authService.login(request);
 
-        Cookie cookie = new Cookie(CookieUtil.TOKEN, authResponse.getToken());
+        Cookie cookie = new Cookie(CookieUtil.TOKEN, authResponse.token());
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
@@ -32,8 +32,6 @@ public class AuthController {
     @GetMapping("/login/check")
     public ResponseEntity<LoginCheckResponse> checkLogin(HttpServletRequest request) {
         String token = CookieUtil.extractTokenFromCookies(request.getCookies());
-        if (token == null || token.isEmpty()) return ResponseEntity.status(401).build();
-
         String name = authService.getNameFromToken(token);
         return ResponseEntity.ok(new LoginCheckResponse(name));
     }
@@ -47,4 +45,5 @@ public class AuthController {
         response.addCookie(cookie);
         return ResponseEntity.ok().build();
     }
+
 }
